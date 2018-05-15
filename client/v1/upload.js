@@ -4,7 +4,7 @@ var Resource = require("./resource");
 var Helpers = require('../../helpers');
 var Promise = require("bluebird");
 var camelKeys = require('camelcase-keys');
-
+var shortid = require('shortid');
 function Upload() {
     Resource.apply(this, arguments);
 }
@@ -36,7 +36,7 @@ Upload.photo = function (session, streamOrPathOrBuffer, uploadId, name, isSideca
         "quality": "92"
     }
     var isThumbnail = !!uploadId;
-    var predictedUploadId = uploadId || new Date().getTime();
+    var predictedUploadId = uploadId || shortid.generate();
     var filename = (name || "pending_media_")+predictedUploadId+".jpg"
     var request = new Request(session)
 
@@ -74,7 +74,7 @@ Upload.photo = function (session, streamOrPathOrBuffer, uploadId, name, isSideca
 
 Upload.video = function(session,videoBufferOrPath,photoStreamOrPath,isSidecar){
     //Probably not the best way to upload video, best to use stream not to store full video in memory, but it's the easiest
-    var predictedUploadId = new Date().getTime();
+    var predictedUploadId = shortid.generate();
     var request = new Request(session);
     return Helpers.pathToBuffer(videoBufferOrPath)
         .then(function(buffer){
