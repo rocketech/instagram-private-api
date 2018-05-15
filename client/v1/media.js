@@ -6,7 +6,7 @@ var pruned = require('./json-pruned');
 var fs = require('fs');
 var request = require('request-promise');
 var Promise = require("bluebird");
-var shortid = require('shortid');
+//var shortid = require('shortid');
 
 function Media(session, params) {
     Resource.apply(this, arguments);
@@ -395,7 +395,7 @@ Media.configureVideoAlbum = function (session, uploadId, caption, durationms, de
 };
 
 Media.configureAlbum = function (session, medias, caption, disableComments) {
-    var albumUploadId = shortid.generate();
+    var albumUploadId = (new Date().getTime()) + Math.floor(Math.random() * 1000);//shortid.generate();
 
     caption = caption || '';
     disableComments = disableComments || false;
