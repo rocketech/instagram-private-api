@@ -54,6 +54,8 @@ const ROUTES = {
     mediaLikes: 'media/<%= mediaId %>/likers/',
     mediaComments: 'media/<%= mediaId %>/comments/<%= maxId ? ("?max_id=" + maxId) : "" %>',
     mediaDeletePhoto: 'media/<%= mediaId %>/delete/?media_type=PHOTO',
+    mediaDeleteVideo: 'media/<%= mediaId %>/delete/?media_type=VIDEO',
+    mediaDeleteAlbum: 'media/<%= mediaId %>/delete/?media_type=ALBUM',
     mediaEdit: 'media/<%= mediaId %>/edit_media/',
     qeSync: 'qe/sync/',
     discoverAyml: 'discover/ayml/',

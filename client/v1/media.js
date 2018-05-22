@@ -119,10 +119,46 @@ Media.likers = function(session, mediaId) {
 };
 
 
-Media.delete = function(session, mediaId) {
+Media.deletePhoto = function(session, mediaId) {
     return new Request(session)
         .setMethod('POST')
         .setResource('mediaDeletePhoto', {mediaId: mediaId})
+        .setData({
+            media_id: mediaId
+        })
+        .generateUUID()
+        .signPayload()
+        .send()
+        .then(function (json) {
+            if(json.did_delete) return;
+            throw new Exceptions.RequestError({
+                messaage: 'Not posible to delete medium!'
+            })
+        })
+};
+
+Media.deleteVideo = function(session, mediaId) {
+    return new Request(session)
+        .setMethod('POST')
+        .setResource('mediaDeleteVideo', {mediaId: mediaId})
+        .setData({
+            media_id: mediaId
+        })
+        .generateUUID()
+        .signPayload()
+        .send()
+        .then(function (json) {
+            if(json.did_delete) return;
+            throw new Exceptions.RequestError({
+                messaage: 'Not posible to delete medium!'
+            })
+        })
+};
+
+Media.deleteAlbum = function(session, mediaId) {
+    return new Request(session)
+        .setMethod('POST')
+        .setResource('mediaDeleteAlbum', {mediaId: mediaId})
         .setData({
             media_id: mediaId
         })
@@ -415,7 +451,6 @@ Media.configureAlbum = function (session, medias, caption, disableComments) {
                 client_sidecar_id: albumUploadId,
                 children_metadata: results
             };
-
             if(disableComments) {
                 params['disable_comments'] = '1';
             }

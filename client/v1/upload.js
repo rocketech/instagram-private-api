@@ -164,7 +164,13 @@ Upload.video = function(
             ).then(function() {
               return uploadData;
             });
-          });
+          })
+          .catch(error =>{
+            console.log(error);
+            throw error;
+          }
+        )
+          ;
       });
   });
 };
