@@ -126,14 +126,14 @@ Media.deletePhoto = function(session, mediaId) {
       return new Request(session)
         .setMethod("POST")
         .setResource("mediaDeletePhoto", { mediaId })
-        .setBodyType('form')
+        .setBodyType("form")
         .setData(requestData)
         .generateUUID()
         .signPayload()
         .send();
     })
     .then(function(json) {
-      if (json.did_delete) return;
+      if (json.did_delete) return ({ session, result: json });
       throw new Exceptions.RequestError({
         messaage: "Not posible to delete medium!"
       });
@@ -141,56 +141,56 @@ Media.deletePhoto = function(session, mediaId) {
 };
 
 Media.deleteVideo = function(session, mediaId) {
-    return session
-      .getAccountId()
-      .then(accountId => {
-        const requestData = {
-          _uid: accountId.toString(),
-          media_id: mediaId
-        };
-  
-        return new Request(session)
-          .setMethod("POST")
-          .setResource("mediaDeleteVideo", { mediaId })
-          .setBodyType('form')
-          .setData(requestData)
-          .generateUUID()
-          .signPayload()
-          .send();
-      })
-      .then(function(json) {
-        if (json.did_delete) return;
-        throw new Exceptions.RequestError({
-          messaage: "Not posible to delete medium!"
-        });
+  return session
+    .getAccountId()
+    .then(accountId => {
+      const requestData = {
+        _uid: accountId.toString(),
+        media_id: mediaId
+      };
+
+      return new Request(session)
+        .setMethod("POST")
+        .setResource("mediaDeleteVideo", { mediaId })
+        .setBodyType("form")
+        .setData(requestData)
+        .generateUUID()
+        .signPayload()
+        .send();
+    })
+    .then(function(json) {
+      if (json.did_delete) return ({ session, result: json });
+      throw new Exceptions.RequestError({
+        messaage: "Not posible to delete medium!"
       });
-  };
+    });
+};
 
 Media.deleteAlbum = function(session, mediaId) {
-    return session
-      .getAccountId()
-      .then(accountId => {
-        const requestData = {
-          _uid: accountId.toString(),
-          media_id: mediaId
-        };
-  
-        return new Request(session)
-          .setMethod("POST")
-          .setResource("mediaDeleteAlbum", { mediaId })
-          .setBodyType('form')
-          .setData(requestData)
-          .generateUUID()
-          .signPayload()
-          .send();
-      })
-      .then(function(json) {
-        if (json.did_delete) return;
-        throw new Exceptions.RequestError({
-          messaage: "Not posible to delete medium!"
-        });
+  return session
+    .getAccountId()
+    .then(accountId => {
+      const requestData = {
+        _uid: accountId.toString(),
+        media_id: mediaId
+      };
+
+      return new Request(session)
+        .setMethod("POST")
+        .setResource("mediaDeleteAlbum", { mediaId })
+        .setBodyType("form")
+        .setData(requestData)
+        .generateUUID()
+        .signPayload()
+        .send();
+    })
+    .then(function(json) {
+      if (json.did_delete) return ({ session, result: json });
+      throw new Exceptions.RequestError({
+        messaage: "Not posible to delete medium!"
       });
-  };
+    });
+};
 
 Media.edit = function(session, mediaId, caption, userTags) {
   var requestPayload = {
