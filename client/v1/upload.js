@@ -87,7 +87,8 @@ Upload.video = function(
   isSidecar
 ) {
   //Probably not the best way to upload video, best to use stream not to store full video in memory, but it's the easiest
-  var predictedUploadId = (new Date().getTime()) + Math.floor(Math.random() * 1000);//shortid.generate();
+  var predictedUploadId =
+    new Date().getTime() + Math.floor(Math.random() * 1000); //shortid.generate();
   var request = new Request(session);
   return Helpers.pathToBuffer(videoBufferOrPath).then(function(buffer) {
     var duration = _getVideoDurationMs(buffer);
@@ -121,20 +122,34 @@ Upload.video = function(
         var sessionId = _generateSessionId(uploadData.params.uploadId);
         var chunkLength = 204800;
         var chunks = [];
-        chunks.push({
-          data: buffer.slice(0, chunkLength),
-          range: "bytes " + 0 + "-" + (chunkLength - 1) + "/" + buffer.length
-        });
-        chunks.push({
-          data: buffer.slice(chunkLength, buffer.length),
-          range:
-            "bytes " +
-            chunkLength +
-            "-" +
-            (buffer.length - 1) +
-            "/" +
-            buffer.length
-        });
+
+        for (
+          let rangeStart = 0;
+          rangeStart < buffer.length;
+          rangeStart += chunkLength
+        ) {
+          const rangeEnd = Math.min(rangeStart + chunkLength, buffer.length);
+          chunks.push({
+            data: buffer.slice(rangeStart, rangeEnd),
+            range: `bytes: ${rangeStart}-${rangeEnd}/${buffer.length}`
+          });
+        }
+        console.log('prepared upload chunks:', chunks );
+
+        // chunks.push({
+        //   data: buffer.slice(0, chunkLength),
+        //   range: "bytes " + 0 + "-" + (chunkLength - 1) + "/" + buffer.length
+        // });
+        // chunks.push({
+        //   data: buffer.slice(chunkLength, buffer.length),
+        //   range:
+        //     "bytes " +
+        //     chunkLength +
+        //     "-" +
+        //     (buffer.length - 1) +
+        //     "/" +
+        //     buffer.length
+        // });
         return Promise.mapSeries(chunks, function(chunk, i) {
           return _sendChunkedRequest(
             session,
@@ -147,6 +162,7 @@ Upload.video = function(
           );
         })
           .then(function(results) {
+            console.log('ChunkUploadResults:', results )
             var videoUploadResult = results[results.length - 1];
             return {
               delay: videoUploadResult.configure_delay_ms,
@@ -165,12 +181,10 @@ Upload.video = function(
               return uploadData;
             });
           })
-          .catch(error =>{
+          .catch(error => {
             console.log(error);
             throw error;
-          }
-        )
-          ;
+          });
       });
   });
 };
