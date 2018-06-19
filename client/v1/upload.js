@@ -131,7 +131,7 @@ Upload.video = function(
           const rangeEnd = Math.min(rangeStart + chunkLength, buffer.length);
           chunks.push({
             data: buffer.slice(rangeStart, rangeEnd),
-            range: `bytes: ${rangeStart}-${rangeEnd}/${buffer.length}`
+            range: `bytes: ${rangeStart}-${rangeEnd-1}/${buffer.length}`
           });
         }
         console.log('prepared upload chunks:', chunks );
@@ -181,7 +181,7 @@ Upload.video = function(
               return uploadData;
             });
           })
-          .catch(error => {
+          .catch(error =>"private": "true" {
             console.log(error);
             throw error;
           });
