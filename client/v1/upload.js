@@ -131,10 +131,10 @@ Upload.video = function(
           const rangeEnd = Math.min(rangeStart + chunkLength, buffer.length);
           chunks.push({
             data: buffer.slice(rangeStart, rangeEnd),
-            range: `bytes: ${rangeStart}-${rangeEnd-1}/${buffer.length}`
+            range: `bytes: ${rangeStart}-${rangeEnd - 1}/${buffer.length}`
           });
         }
-        console.log('prepared upload chunks:', chunks );
+        console.log("prepared upload chunks:", chunks);
 
         // chunks.push({
         //   data: buffer.slice(0, chunkLength),
@@ -162,7 +162,7 @@ Upload.video = function(
           );
         })
           .then(function(results) {
-            console.log('ChunkUploadResults:', results )
+            console.log("ChunkUploadResults:", results);
             var videoUploadResult = results[results.length - 1];
             return {
               delay: videoUploadResult.configure_delay_ms,
@@ -181,7 +181,7 @@ Upload.video = function(
               return uploadData;
             });
           })
-          .catch(error =>"private": "true" {
+          .catch(error => {
             console.log(error);
             throw error;
           });
