@@ -36,7 +36,9 @@ Relationship.get = function (session, accountId) {
         })
 };
 
-
+Relationship.prototype.pendingFollowers = function () {
+    return Relationship.pendingFollowers(this.session)
+};
 Relationship.pendingFollowers = function (session) {
     return new Request(session)
         .setMethod('GET')
