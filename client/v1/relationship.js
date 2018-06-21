@@ -47,11 +47,12 @@ Relationship.pendingFollowers = function (session) {
         .signPayload()
         .send()
         .then(function(data) {
-            return _.map(data.users, function(data, key) {
-                var relationship = new Relationship(session, data);    
-                relationship.setAccountId(data.pk);
-                return relationship;
-            })
+            return data.users;
+            // return _.map(data.users, function(data, key) {
+            //     var relationship = new Relationship(session, data);    
+            //     relationship.setAccountId(data.pk);
+            //     return relationship;
+            // })
         })
 };
 
