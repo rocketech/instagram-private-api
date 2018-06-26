@@ -22,7 +22,7 @@ var Location = require("./location");
 var Exceptions = require("./exceptions");
 var camelKeys = require("camelcase-keys");
 
-Media.prototype.parseParams = function(json) {
+Media.prototype.parseParams = function (json) {
   var hash = camelKeys(json);
   var that = this;
   hash.commentCount = hash.commentsDisabled ? 0 : json.comment_count;
@@ -43,7 +43,7 @@ Media.prototype.parseParams = function(json) {
     };
   }
   if (json.media_type === 8 && _.isArray(json.carousel_media)) {
-    hash.carouselMedia = _.map(json.carousel_media, function(medium) {
+    hash.carouselMedia = _.map(json.carousel_media, function (medium) {
       return new Media(that.session, medium);
     });
   }
@@ -52,12 +52,12 @@ Media.prototype.parseParams = function(json) {
   if (_.isObject(json.image_versions2)) {
     hash.images = json.image_versions2.candidates;
   } else if (_.isObject(json.carousel_media)) {
-    hash.images = json.carousel_media.map(function(media) {
+    hash.images = json.carousel_media.map(function (media) {
       return media.image_versions2.candidates;
     });
   }
   if (_.isArray(json.video_versions)) hash.videos = json.video_versions;
-  this.previewComments = _.map(json.preview_comments, function(comment) {
+  this.previewComments = _.map(json.preview_comments, function (comment) {
     return new Comment(that.session, comment);
   });
   // backward compability
@@ -66,7 +66,7 @@ Media.prototype.parseParams = function(json) {
   return hash;
 };
 
-Media.prototype.getParams = function() {
+Media.prototype.getParams = function () {
   return _.extend(this._params, {
     account: this.account.params,
     comments: _.map(this.comments, "params"),
@@ -75,46 +75,46 @@ Media.prototype.getParams = function() {
   });
 };
 
-Media.getById = function(session, id) {
+Media.getById = function (session, id) {
   return new Request(session)
     .setMethod("GET")
     .setResource("mediaInfo", { mediaId: id })
     .send()
-    .then(function(json) {
+    .then(function (json) {
       return new Media(session, json.items[0]);
     });
 };
 
-Media.getByUrl = function(session, url) {
+Media.getByUrl = function (session, url) {
   var self = this;
   return request({
     url: "https://api.instagram.com/oembed/",
     qs: { url: url },
     json: true
   })
-    .then(function(response) {
+    .then(function (response) {
       return self.getById(session, response.media_id);
     })
-    .catch(function(reason) {
+    .catch(function (reason) {
       if (reason.error === "No URL Match")
         throw new Exceptions.NotFoundError("No URL Match");
       else throw reason;
     });
 };
 
-Media.likers = function(session, mediaId) {
+Media.likers = function (session, mediaId) {
   return new Request(session)
     .setMethod("GET")
     .setResource("mediaLikes", { mediaId: mediaId })
     .send()
-    .then(function(data) {
-      return _.map(data.users, function(user) {
+    .then(function (data) {
+      return _.map(data.users, function (user) {
         return new Account(session, user);
       });
     });
 };
 
-Media.deletePhoto = function(session, mediaId) {
+Media.deletePhoto = function (session, mediaId) {
   return session
     .getAccountId()
     .then(accountId => {
@@ -132,7 +132,7 @@ Media.deletePhoto = function(session, mediaId) {
         .signPayload()
         .send();
     })
-    .then(function(json) {
+    .then(function (json) {
       if (json.did_delete) return ({ session, result: json });
       throw new Exceptions.RequestError({
         messaage: "Not posible to delete medium!"
@@ -140,7 +140,7 @@ Media.deletePhoto = function(session, mediaId) {
     });
 };
 
-Media.deleteVideo = function(session, mediaId) {
+Media.deleteVideo = function (session, mediaId) {
   return session
     .getAccountId()
     .then(accountId => {
@@ -158,7 +158,7 @@ Media.deleteVideo = function(session, mediaId) {
         .signPayload()
         .send();
     })
-    .then(function(json) {
+    .then(function (json) {
       if (json.did_delete) return ({ session, result: json });
       throw new Exceptions.RequestError({
         messaage: "Not posible to delete medium!"
@@ -166,7 +166,7 @@ Media.deleteVideo = function(session, mediaId) {
     });
 };
 
-Media.deleteAlbum = function(session, mediaId) {
+Media.deleteAlbum = function (session, mediaId) {
   return session
     .getAccountId()
     .then(accountId => {
@@ -184,7 +184,7 @@ Media.deleteAlbum = function(session, mediaId) {
         .signPayload()
         .send();
     })
-    .then(function(json) {
+    .then(function (json) {
       if (json.did_delete) return ({ session, result: json });
       throw new Exceptions.RequestError({
         messaage: "Not posible to delete medium!"
@@ -192,7 +192,7 @@ Media.deleteAlbum = function(session, mediaId) {
     });
 };
 
-Media.edit = function(session, mediaId, caption, userTags) {
+Media.edit = function (session, mediaId, caption, userTags) {
   var requestPayload = {
     media_id: mediaId,
     caption_text: caption
@@ -209,7 +209,7 @@ Media.edit = function(session, mediaId, caption, userTags) {
     .generateUUID()
     .signPayload()
     .send()
-    .then(function(json) {
+    .then(function (json) {
       if (json.media.caption_is_edited) {
         return new Media(session, json.media);
       }
@@ -219,7 +219,7 @@ Media.edit = function(session, mediaId, caption, userTags) {
     });
 };
 
-Media.configurePhoto = function(
+Media.configurePhoto = function (
   session,
   uploadId,
   caption,
@@ -237,7 +237,7 @@ Media.configurePhoto = function(
   const CROP = 1;
   return session
     .getAccountId()
-    .then(function(accountId) {
+    .then(function (accountId) {
       var payload = pruned({
         source_type: "4",
         caption: caption,
@@ -270,12 +270,72 @@ Media.configurePhoto = function(
         .signPayload()
         .send();
     })
-    .then(function(json) {
+    .then(function (json) {
       return new Media(session, json.media);
     });
 };
 
-Media.configurePhotoStory = function(session, uploadId, width, height) {
+
+Media.configureVideoStory = function (
+  session,
+  uploadId,
+  durationms,
+  {
+    audio_muted = false,
+    trim_type = 0,
+    source_type = "camera",
+    mas_opt_in = "NOT_PROMPTED",
+    disable_comments = false,
+    filter_type = 0,
+    poster_frame_index = 0,
+    geotag_enabled = false,
+    camera_position = "unknown"
+  } = {}
+) {
+  if (_.isEmpty(uploadId))
+    throw new Error("Upload argument must be upload valid upload id");
+  if (typeof durationms === "undefined")
+    throw new Error("Durationms argument must be upload valid video duration");
+  var duration = durationms / 1000;
+  if (!delay || typeof delay != "number") delay = 6500;
+  return Promise.delay(delay)
+    .then(function () {
+      return session.getAccountId();
+    })
+    .then(function (accountId) {
+      var payload = pruned({
+        source_type: "4",
+        _uid: accountId.toString(),
+        upload_id: uploadId.toString(),
+        configure_mode: "1"
+      });
+
+      return new Request(session)
+        .setMethod("POST")
+        .setResource("mediaConfigureVideoStory")
+        .setBodyType("form")
+        .setData(JSON.parse(payload))
+        .generateUUID()
+        .signPayload()
+        .send()
+        .then(function (json) {
+          return new Media(session, json.media);
+        })
+        .catch(Exceptions.TranscodeTimeoutError, function (error) {
+          //Well, we just want to repeat our request. Dunno why this is happening and we should not let our users deal with this crap themselves.
+          return Media.configureVideo(
+            session,
+            uploadId,
+            caption,
+            durationms,
+            delay
+          );
+        });
+    });
+};
+
+
+Media.configurePhotoStory = function (session, uploadId, width, height) {
   if (_.isEmpty(uploadId))
     throw new Error("Upload argument must be upload valid upload id");
   if (!width) width = 800;
@@ -283,7 +343,7 @@ Media.configurePhotoStory = function(session, uploadId, width, height) {
   const CROP = 1;
   return session
     .getAccountId()
-    .then(function(accountId) {
+    .then(function (accountId) {
       var payload = pruned({
         source_type: "4",
         upload_id: uploadId,
@@ -314,12 +374,12 @@ Media.configurePhotoStory = function(session, uploadId, width, height) {
         .signPayload()
         .send();
     })
-    .then(function(json) {
+    .then(function (json) {
       return new Media(session, json.media);
     });
 };
 
-Media.configureVideo = function(
+Media.configureVideo = function (
   session,
   uploadId,
   caption,
@@ -345,10 +405,10 @@ Media.configureVideo = function(
   if (!caption) caption = "";
   if (!delay || typeof delay != "number") delay = 6500;
   return Promise.delay(delay)
-    .then(function() {
+    .then(function () {
       return session.getAccountId();
     })
-    .then(function(accountId) {
+    .then(function (accountId) {
       var payload = pruned({
         video_result: "deprecated",
         audio_muted,
@@ -389,10 +449,10 @@ Media.configureVideo = function(
         .generateUUID()
         .signPayload()
         .send()
-        .then(function(json) {
+        .then(function (json) {
           return new Media(session, json.media);
         })
-        .catch(Exceptions.TranscodeTimeoutError, function(error) {
+        .catch(Exceptions.TranscodeTimeoutError, function (error) {
           //Well, we just want to repeat our request. Dunno why this is happening and we should not let our users deal with this crap themselves.
           return Media.configureVideo(
             session,
@@ -405,7 +465,7 @@ Media.configureVideo = function(
     });
 };
 
-Media.configurePhotoAlbum = function(
+Media.configurePhotoAlbum = function (
   session,
   uploadId,
   caption,
@@ -441,7 +501,7 @@ Media.configurePhotoAlbum = function(
   return Promise.resolve(payload);
 };
 
-Media.configureVideoAlbum = function(
+Media.configureVideoAlbum = function (
   session,
   uploadId,
   caption,
@@ -457,7 +517,7 @@ Media.configureVideoAlbum = function(
   var duration = durationms / 1000;
   if (!caption) caption = "";
   if (!delay || typeof delay != "number") delay = 6500;
-  return Promise.delay(delay).then(function() {
+  return Promise.delay(delay).then(function () {
     var payload = {
       filter_type: "0",
       source_type: "3",
@@ -485,13 +545,13 @@ Media.configureVideoAlbum = function(
   });
 };
 
-Media.configureAlbum = function(session, medias, caption, disableComments) {
+Media.configureAlbum = function (session, medias, caption, disableComments) {
   var albumUploadId = new Date().getTime() + Math.floor(Math.random() * 1000); //shortid.generate();
 
   caption = caption || "";
   disableComments = disableComments || false;
 
-  return Promise.mapSeries(medias, function(media) {
+  return Promise.mapSeries(medias, function (media) {
     if (media.type === "photo") {
       return Media.configurePhotoAlbum(
         session,
@@ -514,7 +574,7 @@ Media.configureAlbum = function(session, medias, caption, disableComments) {
     } else {
       throw new Error("Invalid media type: " + media.type);
     }
-  }).then(function(results) {
+  }).then(function (results) {
     var params = {
       caption: caption,
       client_sidecar_id: albumUploadId,
