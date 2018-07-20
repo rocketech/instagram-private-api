@@ -357,8 +357,9 @@ Request.prototype.send = function(options, attemps) {
     })
     .spread(_.bind(this.beforeParse, this))
     .then(_.bind(this.parseMiddleware, this))
-    .then(function(response) {
-      var json = response.body;
+    .then(response => {
+      console.log(`request returned ${response.body}`);
+      const json = response.body;
       if (_.isObject(json) && json.status == "ok")
         return _.omit(response.body, "status");
       if (
@@ -366,23 +367,25 @@ Request.prototype.send = function(options, attemps) {
         json.message.toLowerCase().indexOf("transcode timeout") !== -1
       )
         throw new Exceptions.TranscodeTimeoutError();
-      if (
-        _.isObject(json) &&
-        json.two_factor_required === true
-      )
-      {
-        throw new Exceptions.TwoFactorError(json, this.session);
-      }
 
-    throw new Exceptions.RequestError(json);
+      throw new Exceptions.RequestError(json);
     })
-    .catch(function(error) {
+    .catch(error => {
       return that.beforeError(error, options, attemps);
     })
     .catch(function(err) {
       if (err instanceof Exceptions.APIError) throw err;
       if (!err || !err.response) throw err;
-      var response = err.response;
+
+      const response = err.response;
+      if (response.statusCode == 400) {
+        const json = JSON.parse(response.body);
+        if (_.isObject(json) && json.two_factor_required === true) {
+          console.log("throwing 2f Error");
+          throw new Exceptions.TwoFactorError(json, that.session);
+        }
+      }
+
       if (response.statusCode == 404)
         throw new Exceptions.NotFoundError(response);
       if (response.statusCode >= 500) {
