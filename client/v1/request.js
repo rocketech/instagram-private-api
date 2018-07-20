@@ -368,8 +368,7 @@ Request.prototype.send = function(options, attemps) {
         throw new Exceptions.TranscodeTimeoutError();
       if (
         _.isObject(json) &&
-        _.isString(json.message) &&
-        json.message.two_factor_required === true
+        json.two_factor_required === true
       )
       {
         throw new Exceptions.TwoFactorError(json, this.session);
