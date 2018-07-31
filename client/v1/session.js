@@ -187,7 +187,7 @@ Session.login = function(session, username, password) {
         
 }
 
-Session.twoFacorLogin = function(session,  username, password, two_factor_identifier, verification_code) {
+Session.twoFactorLogin = function(session,  username, password, two_factor_identifier, verification_code) {
     return new Request(session)
         .setResource('twoFactorLogin')
         .setMethod('POST')
