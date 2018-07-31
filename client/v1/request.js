@@ -381,7 +381,7 @@ Request.prototype.send = function(options, attemps) {
       if (response.statusCode == 400) {
         const json = JSON.parse(response.body);
         if (_.isObject(json) && json.two_factor_required === true) {
-          console.log("throwing 2f Error");
+          console.log("Request: throwing 2f Error");
           throw new Exceptions.TwoFactorError(json, that.session);
         }
       }
