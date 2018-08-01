@@ -342,6 +342,14 @@ Request.prototype.afterError = function(error, request, attemps) {
 
 Request.prototype.send = function(options, attemps) {
   var that = this;
+
+  const _data = that._request.data;
+  if (_.isObject(_data)) {
+    console.log(
+      `resource: "${that._resource}", request: data: ${JSON.stringify(_data)}`
+    );
+  }
+
   if (!attemps) attemps = 0;
   return this._mergeOptions(options)
     .then(function(opts) {
@@ -359,8 +367,12 @@ Request.prototype.send = function(options, attemps) {
     .then(_.bind(this.parseMiddleware, this))
     .then(response => {
       const json = response.body;
-      if (_.isObject(json)) 
-        console.log(`request.body: ${JSON.stringify(json)}`);
+      if (_.isObject(json))
+        console.log(
+          ` request.response: status: ${
+            response.statusCode
+          } body: ${JSON.stringify(json)}`
+        );
       if (_.isObject(json) && json.status == "ok")
         return _.omit(response.body, "status");
       if (
