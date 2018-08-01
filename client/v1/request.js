@@ -358,8 +358,9 @@ Request.prototype.send = function(options, attemps) {
     .spread(_.bind(this.beforeParse, this))
     .then(_.bind(this.parseMiddleware, this))
     .then(response => {
-      console.log(`request returned ${response.body}`);
       const json = response.body;
+      if (_.isObject(json)) 
+        console.log(`request.body: ${JSON.stringify(json)}`);
       if (_.isObject(json) && json.status == "ok")
         return _.omit(response.body, "status");
       if (
