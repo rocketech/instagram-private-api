@@ -164,9 +164,11 @@ Request.prototype.transform = function(callback) {
 };
 
 Request.prototype.generateUUID = function() {
-  this.setData({
-    _uuid: Helpers.generateUUID()
-  });
+  if (!this._request.data._uuid) {
+    this.setData({
+      _uuid: Helpers.generateUUID()
+    });
+  }
   return this;
 };
 
