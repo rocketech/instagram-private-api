@@ -124,8 +124,8 @@ Session.prototype.destroy = function () {
 };
 
 
-Session.login = function(session, username, password) {
-    return new Request(session)
+Session.login = function(session, username, password, uuid) {
+    return new Request(session, uuid)
         .setResource('login')
         .setMethod('POST')
         .generateUUID()
@@ -251,7 +251,7 @@ Session.twoFactorLogin = function(session,  username, password, two_factor_ident
         
 }
 
-Session.create = function(device, storage, username, password, proxy) {
+Session.create = function(device, storage, username, password, uuid, proxy) {
     var that = this;
     var session = new Session(device, storage);
     if(_.isString(proxy) && !_.isEmpty(proxy))
@@ -262,6 +262,6 @@ Session.create = function(device, storage, username, password, proxy) {
         })
         .catch(Exceptions.CookieNotValidError, function() {
             // We either not have valid cookes or authentication is not fain!
-            return Session.login(session, username, password)
+            return Session.login(session, username, password, uuid)
         })
 }

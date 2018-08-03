@@ -102,7 +102,7 @@ ActionSpamError.prototype.getFeedbackMessage = function() {
   return message;
 };
 
-function CheckpointError(json, session) {
+function CheckpointError(json, session, uuid) {
   this.json = json;
   this.name = "CheckpointError";
   this.message = "Instagram call checkpoint for this action!";
@@ -117,6 +117,7 @@ function CheckpointError(json, session) {
     this.url = json.challenge.url;
   if (!this.url) this.url = routes.getWebUrl("challenge");
   this.session = session;
+  this.uuid = uuid;
 }
 util.inherits(CheckpointError, APIError);
 exports.CheckpointError = CheckpointError;
@@ -325,11 +326,12 @@ function NotPossibleToVerify() {
 util.inherits(NotPossibleToVerify, APIError);
 exports.NotPossibleToVerify = NotPossibleToVerify;
 
-function NoChallengeRequired(session,reason) {
+function NoChallengeRequired(session,reason,uuid) {
   this.name = "NoChallengeRequired";
   this.message = "No challenge is required to use account!";
   this.session = session;
   this.reason = reason;
+  this.uuid = uuid;
 }
 
 util.inherits(NoChallengeRequired, APIError);

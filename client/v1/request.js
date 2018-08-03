@@ -6,7 +6,7 @@ var Agent = require("socks5-https-client/lib/Agent");
 
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 
-function Request(session) {
+function Request(session, uuid) {
   this._id = _.uniqueId();
   this._url = null;
   this._signData = false;
@@ -24,6 +24,13 @@ function Request(session) {
   } else {
     this.setData({ _csrftoken: "missing" });
   }
+
+  if (uuid) {
+    this.setData({
+      _uuid: uuid
+    });
+  }
+
   this._initialize.apply(this, arguments);
   this._transform = function(t) {
     return t;
@@ -306,8 +313,10 @@ Request.prototype.errorMiddleware = function(response) {
   response = this.parseMiddleware(response);
   var json = response.body;
   if (json.spam) throw new Exceptions.ActionSpamError(json);
-  if (json.message == "challenge_required")
-    throw new Exceptions.CheckpointError(json, this.session);
+  if (json.message == "challenge_required") {
+    var uuid = this._request.data._uuid;
+    throw new Exceptions.CheckpointError(json, this.session, uuid);
+  }
   if (json.message == "login_required")
     throw new Exceptions.AuthenticationError(
       "Login required to process this request"
