@@ -325,9 +325,11 @@ function NotPossibleToVerify() {
 util.inherits(NotPossibleToVerify, APIError);
 exports.NotPossibleToVerify = NotPossibleToVerify;
 
-function NoChallengeRequired() {
+function NoChallengeRequired(session,reason) {
   this.name = "NoChallengeRequired";
   this.message = "No challenge is required to use account!";
+  this.session = session;
+  this.reason = reason;
 }
 
 util.inherits(NoChallengeRequired, APIError);
