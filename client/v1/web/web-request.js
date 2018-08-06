@@ -104,7 +104,7 @@ WebRequest.prototype.send = function(options) {
             response.statusCode
           } body: ${JSON.stringify(json)}`
         );
-        logger.info('webRequest.response');
+        console.log('webRequest.response');
         const cookies = await that.session.cookieStore.getCookies();
         cookies.forEach(cookie => {
             console.log(cookie);
