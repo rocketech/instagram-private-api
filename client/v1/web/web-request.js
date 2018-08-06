@@ -64,7 +64,7 @@ WebRequest.prototype.setHost = function(host) {
   return this;
 };
 
-WebRequest.prototype.send = function(options) {
+WebRequest.prototype.send = async function(options) {
   var that = this;
   const _data = that._request.data;
   if (_.isObject(_data)) {
