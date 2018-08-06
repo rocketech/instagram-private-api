@@ -74,6 +74,12 @@ WebRequest.prototype.send = function(options) {
       )}`
     );
   }
+  console.log('webRequest.send.cookies:');
+  const cookies = await that.session.cookieStore.getCookies();
+  cookies.forEach(cookie => {
+      console.log(cookie);
+  });
+
   return this._mergeOptions(options)
     .then(function(opts) {
       return [opts, that._prepareData()];
@@ -104,7 +110,7 @@ WebRequest.prototype.send = function(options) {
             response.statusCode
           } body: ${JSON.stringify(json)}`
         );
-        console.log('webRequest.response');
+        console.log('webRequest.response.cookies:');
         const cookies = await that.session.cookieStore.getCookies();
         cookies.forEach(cookie => {
             console.log(cookie);

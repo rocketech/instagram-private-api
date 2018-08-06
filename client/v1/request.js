@@ -361,6 +361,11 @@ Request.prototype.send = function(options, attemps) {
       `url: "${that.url}", request: data: ${JSON.stringify(_data)}`
     );
   }
+  console.log('request.send.cookies:');
+  const cookies = await that.session.cookieStore.getCookies();
+  cookies.forEach(cookie => {
+      console.log(cookie);
+  });
 
   if (!attemps) attemps = 0;
   return this._mergeOptions(options)
@@ -385,6 +390,11 @@ Request.prototype.send = function(options, attemps) {
             response.statusCode
           } body: ${JSON.stringify(json)}`
         );
+        console.log('request.response.cookies:');
+        const cookies = await that.session.cookieStore.getCookies();
+        cookies.forEach(cookie => {
+            console.log(cookie);
+        });
       if (_.isObject(json) && json.status == "ok")
         return _.omit(response.body, "status");
       if (
