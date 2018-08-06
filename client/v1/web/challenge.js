@@ -248,7 +248,7 @@ Challenge.reset = function(checkpointError) {
       return error.response;
     })
     .then(function(response) {
-      return that;
+      return response;
     });
 };
 Challenge.prototype.code = function(code) {
