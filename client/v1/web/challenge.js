@@ -54,15 +54,15 @@ Challenge.resolve = function(checkpointError,defaultMethod,skipResetStep){
         
     //     return true;
     // })
-    .then(function() {
-        return true //new WebRequest(session)
-            // .setMethod('GET')
-            // .setUrl(that.apiUrl)
-            // .setHeaders({
-            //     'User-Agent': iPhoneUserAgent
-            // })
-            // .send({followRedirect: true})
-        })
+    // .then(function() {
+    //     return true //new WebRequest(session)
+    //         // .setMethod('GET')
+    //         // .setUrl(that.apiUrl)
+    //         // .setHeaders({
+    //         //     'User-Agent': iPhoneUserAgent
+    //         // })
+    //         // .send({followRedirect: true})
+    //     })
         .catch(errors.StatusCodeError, function(error){
             return error.response;
         })
