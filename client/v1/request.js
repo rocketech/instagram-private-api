@@ -315,6 +315,7 @@ Request.prototype.errorMiddleware = function(response) {
   if (json.spam) throw new Exceptions.ActionSpamError(json);
   if (json.message == "challenge_required") {
     var uuid = this._request.data._uuid;
+    console.log(`throwing CheckpointError from request.errorMiddleware. uuid=${uuid}`);
     throw new Exceptions.CheckpointError(json, this.session, uuid);
   }
   if (json.message == "login_required")
