@@ -352,7 +352,7 @@ Request.prototype.afterError = function(error, request, attemps) {
   throw error;
 };
 
-Request.prototype.send = async function(options, attemps) {
+Request.prototype.send = function(options, attemps) {
   var that = this;
 
   const _data = that._request.data;
