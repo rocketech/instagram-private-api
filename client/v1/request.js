@@ -382,7 +382,7 @@ Request.prototype.send = async function(options, attemps) {
     })
     .spread(_.bind(this.beforeParse, this))
     .then(_.bind(this.parseMiddleware, this))
-    .then(response => {
+    .then(async response => {
       const json = response.body;
       if (_.isObject(json))
         console.log(
