@@ -74,11 +74,11 @@ WebRequest.prototype.send = async function(options) {
       )}`
     );
   }
-  console.log('webRequest.send.cookies:');
-  const cookies = await that.session.cookieStore.getCookies();
-  cookies.forEach(cookie => {
-      console.log(cookie);
-  });
+//   console.log('webRequest.send.cookies:');
+//   const cookies = await that.session.cookieStore.getCookies();
+//   cookies.forEach(cookie => {
+//       console.log(cookie);
+//   });
 
   return this._mergeOptions(options)
     .then(function(opts) {
