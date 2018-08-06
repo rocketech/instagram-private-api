@@ -69,7 +69,7 @@ WebRequest.prototype.send = function(options) {
   const _data = that._request.data;
   if (_.isObject(_data)) {
     console.log(
-      `resource: "${that._resource}", webRequest: data: ${JSON.stringify(
+      `url: "${that.url}", webRequest: data: ${JSON.stringify(
         _data
       )}`
     );

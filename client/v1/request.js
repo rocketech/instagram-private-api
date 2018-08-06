@@ -358,7 +358,7 @@ Request.prototype.send = function(options, attemps) {
   const _data = that._request.data;
   if (_.isObject(_data)) {
     console.log(
-      `resource: "${that._resource}", request: data: ${JSON.stringify(_data)}`
+      `url: "${that.url}", request: data: ${JSON.stringify(_data)}`
     );
   }
 
