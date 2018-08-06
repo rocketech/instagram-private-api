@@ -96,7 +96,7 @@ WebRequest.prototype.send = function(options) {
       }
       return response;
     })
-    .then(function(response) {
+    .then(async function(response) {
       const json = response.body;
       if (_.isObject(json))
         console.log(
