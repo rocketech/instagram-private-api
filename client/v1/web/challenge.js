@@ -42,11 +42,11 @@ var Challenge = function(session, type, error, json) {
 //Oh, and code confirm is same now for email and phone checkpoints
 Challenge.resolve = function(checkpointError, defaultMethod, skipResetStep) {
   var that = this;
-  checkpointError =
-    checkpointError instanceof Exceptions.CheckpointError
-      ? checkpointError
-      : checkpointError.json;
-  if (!this.apiUrl)
+  // checkpointError =
+  //   checkpointError instanceof Exceptions.CheckpointError
+  //     ? checkpointError
+  //     : checkpointError.json;
+  // if (!this.apiUrl)
     this.apiUrl =
       "https://i.instagram.com/api/v1" +
       checkpointError.json.challenge.api_path;
