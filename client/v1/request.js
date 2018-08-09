@@ -1,6 +1,7 @@
 var _ = require("lodash");
 var Promise = require("bluebird");
 var request = require("request-promise");
+require('request-debug')(request);
 var JSONbig = require("json-bigint");
 var Agent = require("socks5-https-client/lib/Agent");
 

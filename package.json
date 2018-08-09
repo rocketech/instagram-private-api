@@ -27,6 +27,7 @@
     "lodash": "^4.17.4",
     "node-cache": "^3.0.0",
     "request": "^2.64.0",
+    "request-debug": "^0.2.0",
     "request-promise": "^1.0.2",
     "shortid": "^2.2.8",
     "socks5-https-client": "^1.1.3",
