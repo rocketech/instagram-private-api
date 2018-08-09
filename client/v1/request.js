@@ -355,12 +355,12 @@ Request.prototype.afterError = function(error, request, attemps) {
 Request.prototype.send = function(options, attemps) {
   var that = this;
 
-  const _data = that._request.data;
-  if (_.isObject(_data)) {
-    console.log(
-      `url: "${that.url}", request: data: ${JSON.stringify(_data)}`
-    );
-  }
+  // const _data = that._request.data;
+  // if (_.isObject(_data)) {
+  //   console.log(
+  //     `url: "${that.url}", request: data: ${JSON.stringify(_data)}`
+  //   );
+  // }
   // console.log('request.send.cookies:');
   // const cookies = await that.session.cookieStore.getCookies();
   // cookies.forEach(cookie => {
@@ -384,17 +384,17 @@ Request.prototype.send = function(options, attemps) {
     .then(_.bind(this.parseMiddleware, this))
     .then(async response => {
       const json = response.body;
-      if (_.isObject(json))
-        console.log(
-          ` request.response: status: ${
-            response.statusCode
-          } body: ${JSON.stringify(json)}`
-        );
-        console.log('request.response.cookies:');
-        const cookies = await that.session.cookieStore.getCookies();
-        cookies.forEach(cookie => {
-            console.log(cookie);
-        });
+      // if (_.isObject(json))
+      //   console.log(
+      //     ` request.response: status: ${
+      //       response.statusCode
+      //     } body: ${JSON.stringify(json)}`
+      //   );
+      //   console.log('request.response.cookies:');
+      //   const cookies = await that.session.cookieStore.getCookies();
+      //   cookies.forEach(cookie => {
+      //       console.log(cookie);
+      //   });
       if (_.isObject(json) && json.status == "ok")
         return _.omit(response.body, "status");
       if (

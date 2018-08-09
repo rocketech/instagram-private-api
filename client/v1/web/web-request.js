@@ -66,14 +66,14 @@ WebRequest.prototype.setHost = function(host) {
 
 WebRequest.prototype.send = function(options) {
   var that = this;
-  const _data = that._request.data;
-  if (_.isObject(_data)) {
-    console.log(
-      `url: "${that.url}", webRequest: data: ${JSON.stringify(
-        _data
-      )}`
-    );
-  }
+  // const _data = that._request.data;
+  // if (_.isObject(_data)) {
+  //   console.log(
+  //     `url: "${that.url}", webRequest: data: ${JSON.stringify(
+  //       _data
+  //     )}`
+  //   );
+  // }
 //   console.log('webRequest.send.cookies:');
 //   const cookies = await that.session.cookieStore.getCookies();
 //   cookies.forEach(cookie => {
@@ -104,17 +104,17 @@ WebRequest.prototype.send = function(options) {
     })
     .then(async function(response) {
       const json = response.body;
-      if (_.isObject(json))
-        console.log(
-          `webRequest.response: status: ${
-            response.statusCode
-          } body: ${JSON.stringify(json)}`
-        );
-        console.log('webRequest.response.cookies:');
-        const cookies = await that.session.cookieStore.getCookies();
-        cookies.forEach(cookie => {
-            console.log(cookie);
-        });
+      // if (_.isObject(json))
+      //   console.log(
+      //     `webRequest.response: status: ${
+      //       response.statusCode
+      //     } body: ${JSON.stringify(json)}`
+      //   );
+      //   console.log('webRequest.response.cookies:');
+      //   const cookies = await that.session.cookieStore.getCookies();
+      //   cookies.forEach(cookie => {
+      //       console.log(cookie);
+      //   });
 
       if (that._jsonEndpoint) return response.body;
       return response;
