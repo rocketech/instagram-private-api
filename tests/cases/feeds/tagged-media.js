@@ -1,34 +1,34 @@
-var should = require('should');
-var Client = require('../../../client/v1');
-var Promise = require('bluebird');
-var path = require('path');
-var mkdirp = require('mkdirp');
-var inquirer = require('inquirer');
-var _ = require('lodash');
-var fs = require('fs');
+const should = require('should');
+const Client = require('../../../client/v1');
+const Promise = require('bluebird');
+const path = require('path');
+const mkdirp = require('mkdirp');
+const inquirer = require('inquirer');
+const _ = require('lodash');
+const fs = require('fs');
 
 
-describe("`TaggedMedia` class", function() {
+describe('`TaggedMedia` class', () => {
 
-    var feed, session;
+  let feed, session;
 
-    before(function() {
-        // https://github.com/huttarichard/instagram-private-api/issues/23
-        session = require('../../run').session;
-        feed = new Client.Feed.TaggedMedia(session, 'форумтаврида')
-    })
+  before(() => {
+    // https://github.com/huttarichard/instagram-private-api/issues/23
+    session = require('../../run').session;
+    feed = new Client.Feed.TaggedMedia(session, 'форумтаврида');
+  });
 
-    it("should not be problem to get media", function(done) {
-        var originalCursor = feed.getCursor();
-        feed.get().then(function(media) {
-            _.each(media, function(medium) {
-                medium.should.be.instanceOf(Client.Media)
-            })
-            should(originalCursor).should.not.equal(feed.getCursor())
-            feed.moreAvailable.should.be.Boolean();
-            feed.moreAvailable.should.equal(true);
-            done()
-        })
-    })
+  it('should not be problem to get media', (done) => {
+    const originalCursor = feed.getCursor();
+    feed.get().then((media) => {
+      _.each(media, (medium) => {
+        medium.should.be.instanceOf(Client.Media);
+      });
+      should(originalCursor).should.not.equal(feed.getCursor());
+      feed.moreAvailable.should.be.Boolean();
+      feed.moreAvailable.should.equal(true);
+      done();
+    });
+  });
 
-})
+});

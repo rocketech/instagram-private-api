@@ -1,9 +1,9 @@
-var util = require("util");
-var _ = require("lodash");
-var Resource = require("./resource");
-var Helpers = require("../../helpers");
-var Promise = require("bluebird");
-var camelKeys = require("camelcase-keys");
+const util = require('util');
+const _ = require('lodash');
+const Resource = require('./resource');
+const Helpers = require('../../helpers');
+const Promise = require('bluebird');
+const camelKeys = require('camelcase-keys');
 //var shortid = require('shortid');
 
 function Upload() {
@@ -13,11 +13,11 @@ function Upload() {
 util.inherits(Upload, Resource);
 
 module.exports = Upload;
-var Exceptions = require("./exceptions");
-var Request = require("./request");
+const Exceptions = require('./exceptions');
+const Request = require('./request');
 
 Upload.prototype.parseParams = function(json) {
-  var hash = camelKeys(json);
+  const hash = camelKeys(json);
   if (json.video_upload_urls && json.video_upload_urls.length) {
     hash.uploadUrl = json.video_upload_urls[0].url;
     hash.uploadJob = json.video_upload_urls[0].job;
@@ -32,50 +32,50 @@ Upload.photo = function(
   name,
   isSidecar
 ) {
-  var data = Buffer.isBuffer(streamOrPathOrBuffer)
+  const data = Buffer.isBuffer(streamOrPathOrBuffer)
     ? streamOrPathOrBuffer
     : Helpers.pathToStream(streamOrPathOrBuffer);
   // This compresion is just default one
-  var compresion = {
-    lib_name: "jt",
-    lib_version: "1.3.0",
-    quality: "92"
+  const compresion = {
+    lib_name: 'jt',
+    lib_version: '1.3.0',
+    quality: '92'
   };
-  var isThumbnail = !!uploadId;
-  var predictedUploadId =
+  const isThumbnail = !!uploadId;
+  const predictedUploadId =
     uploadId || new Date().getTime() + Math.floor(Math.random() * 1000); //  shortid.generate();
-  var filename = (name || "pending_media_") + predictedUploadId + ".jpg";
-  var request = new Request(session);
+  const filename = (name || 'pending_media_') + predictedUploadId + '.jpg';
+  const request = new Request(session);
 
-  var fields = {
+  const fields = {
     image_compression: JSON.stringify(compresion),
     upload_id: predictedUploadId
   };
 
   if (isSidecar) {
-    fields["is_sidecar"] = 1;
+    fields['is_sidecar'] = 1;
     if (isThumbnail) {
-      fields["media_type"] = 2;
+      fields['media_type'] = 2;
     }
   }
 
   return request
-    .setMethod("POST")
-    .setResource("uploadPhoto")
+    .setMethod('POST')
+    .setResource('uploadPhoto')
     .generateUUID()
     .setData(fields)
-    .transform(function(opts) {
+    .transform((opts) => {
       opts.formData.photo = {
         value: data,
         options: {
-          filename: filename,
-          contentType: "image/jpeg"
+          filename,
+          contentType: 'image/jpeg'
         }
       };
       return opts;
     })
     .send()
-    .then(function(json) {
+    .then((json) => {
       return new Upload(session, json);
     });
 };
@@ -87,41 +87,41 @@ Upload.video = function(
   isSidecar
 ) {
   //Probably not the best way to upload video, best to use stream not to store full video in memory, but it's the easiest
-  var predictedUploadId =
+  const predictedUploadId =
     new Date().getTime() + Math.floor(Math.random() * 1000); //shortid.generate();
-  var request = new Request(session);
-  return Helpers.pathToBuffer(videoBufferOrPath).then(function(buffer) {
-    var duration = _getVideoDurationMs(buffer);
+  const request = new Request(session);
+  return Helpers.pathToBuffer(videoBufferOrPath).then((buffer) => {
+    const duration = _getVideoDurationMs(buffer);
     if (duration > 63000)
       throw new Error(
-        "Video is too long. Maximum: 63. Got: " + duration / 1000
+        'Video is too long. Maximum: 63. Got: ' + duration / 1000
       );
-    var fields = {
+    const fields = {
       upload_id: predictedUploadId
     };
     if (isSidecar) {
-      fields["is_sidecar"] = 1;
+      fields['is_sidecar'] = 1;
     } else {
-      fields["media_type"] = 2;
-      fields["upload_media_duration_ms"] = Math.floor(duration);
-      fields["upload_media_height"] = 720;
-      fields["upload_media_width"] = 720;
+      fields['media_type'] = 2;
+      fields['upload_media_duration_ms'] = Math.floor(duration);
+      fields['upload_media_height'] = 720;
+      fields['upload_media_width'] = 720;
     }
     return request
-      .setMethod("POST")
-      .setBodyType("form")
-      .setResource("uploadVideo")
+      .setMethod('POST')
+      .setBodyType('form')
+      .setResource('uploadVideo')
       .generateUUID()
       .setData(fields)
       .send()
-      .then(function(json) {
+      .then((json) => {
         return new Upload(session, json);
       })
-      .then(function(uploadData) {
+      .then((uploadData) => {
         //Uploading video to url
-        var sessionId = _generateSessionId(uploadData.params.uploadId);
-        var chunkLength = 204800;
-        var chunks = [];
+        const sessionId = _generateSessionId(uploadData.params.uploadId);
+        const chunkLength = 204800;
+        const chunks = [];
 
         for (
           let rangeStart = 0;
@@ -134,7 +134,7 @@ Upload.video = function(
             range: `bytes ${rangeStart}-${rangeEnd - 1}/${buffer.length}`
           });
         }
-        console.log("prepared upload chunks:", chunks);
+        console.log('prepared upload chunks:', chunks);
 
         // chunks.push({
         //   data: buffer.slice(0, chunkLength),
@@ -150,7 +150,7 @@ Upload.video = function(
         //     "/" +
         //     buffer.length
         // });
-        return Promise.mapSeries(chunks, function(chunk, i) {
+        return Promise.mapSeries(chunks, (chunk, i) => {
           return _sendChunkedRequest(
             session,
             uploadData.params.uploadUrl,
@@ -161,23 +161,23 @@ Upload.video = function(
             isSidecar
           );
         })
-          .then(function(results) {
-            console.log("ChunkUploadResults:", results);
-            var videoUploadResult = results[results.length - 1];
+          .then((results) => {
+            console.log('ChunkUploadResults:', results);
+            const videoUploadResult = results[results.length - 1];
             return {
               delay: videoUploadResult.configure_delay_ms,
               durationms: duration,
               uploadId: uploadData.params.uploadId
             };
           })
-          .then(function(uploadData) {
+          .then((uploadData) => {
             return Upload.photo(
               session,
               photoStreamOrPath,
               uploadData.uploadId,
-              "cover_photo_",
+              'cover_photo_',
               isSidecar
-            ).then(function() {
+            ).then(() => {
               return uploadData;
             });
           })
@@ -190,36 +190,36 @@ Upload.video = function(
 };
 
 Upload.album = function(session, medias, caption, disableComments) {
-  var uploadPromises = [];
+  const uploadPromises = [];
 
   if (medias.length < 2 || medias.length > 10) {
-    throw new Error("Invalid album size");
+    throw new Error('Invalid album size');
   }
 
-  medias.forEach(function(media) {
-    if (["photo", "video"].indexOf(media.type) === -1) {
-      throw new Error("Invalid media type: " + media.type);
+  medias.forEach((media) => {
+    if (['photo', 'video'].indexOf(media.type) === -1) {
+      throw new Error('Invalid media type: ' + media.type);
     }
     if (!media.data) {
-      throw new Error("Data not specified.");
+      throw new Error('Data not specified.');
     }
     if (!media.size) {
-      throw new Error("Size not specified.");
+      throw new Error('Size not specified.');
     }
-    if (media.type === "video") {
+    if (media.type === 'video') {
       if (!media.thumbnail) {
-        throw new Error("Thumbnail not specified.");
+        throw new Error('Thumbnail not specified.');
       }
     }
-    var aspect_ratio = (media.size[0] / media.size[1]).toFixed(2);
+    const aspect_ratio = (media.size[0] / media.size[1]).toFixed(2);
     if (aspect_ratio < 0.8 || aspect_ratio > 1.91) {
-      throw new Error("Invalid media aspect ratio.");
+      throw new Error('Invalid media aspect ratio.');
     }
 
-    if (media.type === "photo") {
+    if (media.type === 'photo') {
       uploadPromises.push(
         Upload.photo(session, media.data, undefined, undefined, true).then(
-          function(payload) {
+          (payload) => {
             return Promise.resolve(
               Object.assign({}, { uploadId: payload.params.uploadId }, media)
             );
@@ -227,11 +227,11 @@ Upload.album = function(session, medias, caption, disableComments) {
         )
       );
     }
-    if (media.type === "video") {
+    if (media.type === 'video') {
       uploadPromises.push(
-        Upload.video(session, media.data, media.thumbnail, true).then(function(
+        Upload.video(session, media.data, media.thumbnail, true).then((
           payload
-        ) {
+        ) => {
           return Promise.resolve(Object.assign({}, payload, media));
         })
       );
@@ -242,10 +242,10 @@ Upload.album = function(session, medias, caption, disableComments) {
 };
 
 function _getVideoDurationMs(buffer) {
-  var start = buffer.indexOf(new Buffer("mvhd")) + 17;
-  var timeScale = buffer.readUInt32BE(start, 4);
-  var duration = buffer.readUInt32BE(start + 4, 4);
-  var movieLength = duration / timeScale;
+  const start = buffer.indexOf(new Buffer('mvhd')) + 17;
+  const timeScale = buffer.readUInt32BE(start, 4);
+  const duration = buffer.readUInt32BE(start + 4, 4);
+  const movieLength = duration / timeScale;
 
   return movieLength * 1000;
 }
@@ -259,25 +259,25 @@ function _sendChunkedRequest(
   range,
   isSidecar
 ) {
-  var headers = {
-    job: job,
-    Host: "upload.instagram.com",
-    "Session-ID": sessionId,
-    "Content-Type": "application/octet-stream",
-    "Content-Disposition": 'attachment; filename=\\"video.mov\\"',
-    "Content-Length": buffer.length,
-    "Content-Range": range
+  const headers = {
+    job,
+    Host: 'upload.instagram.com',
+    'Session-ID': sessionId,
+    'Content-Type': 'application/octet-stream',
+    'Content-Disposition': 'attachment; filename=\\"video.mov\\"',
+    'Content-Length': buffer.length,
+    'Content-Range': range
   };
   if (isSidecar) {
-    headers["Cookie"] = "sessionid=" + sessionId;
+    headers['Cookie'] = 'sessionid=' + sessionId;
   }
   return new Request(session)
-    .setMethod("POST")
-    .setBodyType("body")
+    .setMethod('POST')
+    .setBodyType('body')
     .setUrl(url)
     .generateUUID()
     .setHeaders(headers)
-    .transform(function(opts) {
+    .transform((opts) => {
       opts.body = buffer;
       return opts;
     })
@@ -285,10 +285,10 @@ function _sendChunkedRequest(
 }
 
 function _generateSessionId(uploadId) {
-  var text = (uploadId || "") + "-";
-  var possible = "0123456789";
+  let text = (uploadId || '') + '-';
+  const possible = '0123456789';
 
-  for (var i = 0; i < 9; i++)
+  for (let i = 0; i < 9; i++)
     text += possible.charAt(Math.floor(Math.random() * possible.length));
 
   return text;
