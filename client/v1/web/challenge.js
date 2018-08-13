@@ -79,13 +79,13 @@ Challenge.prototype.reset = function() {
     .catch(error => {
       throw error; //return error.response;
     })
-    .then(response => {
-      let json = null;
-      try {
-        json = JSON.parse(response.body);
-      } catch (error) {
-        throw new TypeError('Invalid response. JSON expected');
-      }
+    .then(json => {
+      // let json = null;
+      // try {
+      //   json = JSON.parse(response.body);
+      // } catch (error) {
+      //   throw new TypeError('Invalid response. JSON expected');
+      // }
       that.json = json;
       that.step = json.step_name;
       that.stepData = json.step_data;
@@ -133,13 +133,13 @@ Challenge.prototype.select = function(methodId) {
           if (json.status === 'ok' && json.action === 'close')
             throw new Exceptions.NoChallengeRequired(that.session, 'statusOk'); //TODO: fix it!
         })
-        .then(response => {
-          let json = null;
-          try {
-            json = JSON.parse(response.body);
-          } catch (error) {
-            throw new TypeError('Invalid response. JSON expected');
-          }
+        .then(json => {
+          // let json = null;
+          // try {
+          //   json = JSON.parse(response.body);
+          // } catch (error) {
+          //   throw new TypeError('Invalid response. JSON expected');
+          // }
           that.json = json;
           that.step = json.step_name;
           that.stepData = json.step_data;
