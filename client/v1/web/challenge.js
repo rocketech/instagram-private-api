@@ -15,14 +15,14 @@ const Exceptions = require('../exceptions');
 // iPhone probably works best, even from android previosly done request
 const iPhoneUserAgent =
   'Instagram 19.0.0.27.91 (iPhone6,1; iPhone OS 9_3_1; en_US; en; scale=2.00; gamut=normal; 640x1136) AppleWebKit/420+';
-const iPhoneUserAgentHtml =
-  'Mozilla/5.0 (iPhone; CPU iPhone OS 9_3_1 like Mac OS X) AppleWebKit/601.1.46 (KHTML, like Gecko) Mobile/13E238 Instagram 10.28.0 (iPhone6,1; iPhone OS 9_3_1; en_US; en; scale=2.00; gamut=normal; 640x1136)';
+//const iPhoneUserAgentHtml =
+('Mozilla/5.0 (iPhone; CPU iPhone OS 9_3_1 like Mac OS X) AppleWebKit/601.1.46 (KHTML, like Gecko) Mobile/13E238 Instagram 10.28.0 (iPhone6,1; iPhone OS 9_3_1; en_US; en; scale=2.00; gamut=normal; 640x1136)');
 
 // const EMAIL_FIELD_REGEXP = /email.*value(.*)"/i;
 // const PHONE_FIELD_REGEXP = /sms.*value(.*)"/i;
 // const PHONE_ENTERED_FIELD_REGEXP = /tel.*value="(\+\d+)"/i;
 // const RESET_FIELD_REGEXP = /reset_progress_form.*action="\/(.*)"/i;
-const SHARED_JSON_REGEXP = /window._sharedData = (.*);<\/script>/i;
+//const SHARED_JSON_REGEXP = /window._sharedData = (.*);<\/script>/i;
 
 const Challenge = function(challengeError) {
   this.json = challengeError.json;
@@ -146,77 +146,7 @@ Challenge.prototype.select = function(methodId) {
         })
     );
   });
-
-  // that.step = json.step_name;
-  // that.json = json;
-  // return that;
-
-  // switch (json.step_name) {
-  // case 'select_verify_method': {
-  //   that.step = 'select_verify_method';
-  //   break;
-  //   // return new WebRequest(session)
-  //   //   .setMethod('POST')
-  //   //   .setUrl(that.apiUrl)
-  //   //   .setHeaders({
-  //   //     'User-Agent': iPhoneUserAgent
-  //   //   })
-  //   //   .setData({
-  //   //     choice: defaultMethod === 'email' ? 1 : 0
-  //   //   })
-  //   //   .send({ followRedirect: true })
-  //   //   .then(() => {
-  //   //     return that.resolve(checkpointError, defaultMethod, true);
-  //   //   });
-  // }
-  // case 'verify_code':
-  //   that.step = 'verify_code';
-  //   break;
-  // case 'submit_phone': {
-  //   that.step = 'submit_phone';
-  //   break;
-  //   // return new PhoneVerificationChallenge(
-  //   //   session,
-  //   //   'phone',
-  //   //   checkpointError,
-  //   //   json
-  //   // );
-  // }
-  // case 'verify_email': {
-  //   that.step = 'verify_email';
-  //   break;
-  //   // return new EmailVerificationChallenge(
-  //   //   session,
-  //   //   'email',
-  //   //   checkpointError,
-  //   //   json
-  //   // );
-  // }
-  // default:
-  //   // return new NotImplementedChallenge(
-  //   //   session,
-  //   //   json.step_name,
-  //   //   checkpointError,
-  //   //   json
-  //   // );
-  // }
-  // });
-
-  // .catch(error => {
-  //   throw error; //return error.response;
-  // })
-  // .then(response => {
-  //   // eslint-disable-line
-  //   that.step = 'reset';
-  //   return that; //response;
-  // });
 };
-
-// Challenge.prototype.selectEmail = function() {
-//   //{"step_name": "verify_email", "step_data": {"security_code": "None", "resend_delay": 60, "contact_point": "l*******a@l***.ru", "form_type": "email"}, "user_id": 6647990140, "nonce_code": "sf56Hrtlz7", "status": "ok"}' } }
-
-// };
-
 
 Challenge.prototype.applyCode = function(code) {
   const that = this;
@@ -245,8 +175,12 @@ Challenge.prototype.applyCode = function(code) {
         json.status === 'ok' &&
         (json.action === 'close' ||
           json.location === 'instagram://checkpoint/dismiss')
-      )
+      ) {
+        that.json = json;
+        that.step = 'success';
+        that.stepData = '';
         return that;
+      }
       throw new Exceptions.NotPossibleToResolveChallenge(
         'Unknown error',
         Exceptions.NotPossibleToResolveChallenge.CODE.UNKNOWN
@@ -261,6 +195,8 @@ Challenge.prototype.applyCode = function(code) {
       throw error;
     });
 };
+
+exports.Challenge = Challenge;
 
 // Challenge.prototype.resolve = function(
 //   checkpointError,
@@ -451,8 +387,6 @@ Challenge.prototype.applyCode = function(code) {
 //     }
 //   }
 // };
-
-exports.Challenge = Challenge;
 
 //WARNING: This is NOT backward compatible code since most methods are not needed anymore. But you are free to make it backward compatible :)
 //How does it works now?
