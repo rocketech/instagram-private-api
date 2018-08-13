@@ -111,7 +111,6 @@ Challenge.prototype.select = function(methodId) {
         //we need catch 400 status to extract response.body.json
         .catch(errors.StatusCodeError, error => {
           let json;
-
           if (
             error.response.body.indexOf(
               'url=instagram://checkpoint/dismiss'
@@ -133,13 +132,13 @@ Challenge.prototype.select = function(methodId) {
           if (json.status === 'ok' && json.action === 'close')
             throw new Exceptions.NoChallengeRequired(that.session, 'statusOk'); //TODO: fix it!
         })
-        .then(json => {
-          // let json = null;
-          // try {
-          //   json = JSON.parse(response.body);
-          // } catch (error) {
-          //   throw new TypeError('Invalid response. JSON expected');
-          // }
+        .then(webResponse => {
+          let json = null;
+          try {
+            json = JSON.parse(webResponse.body);
+          } catch (error) {
+            throw new TypeError('Invalid response. JSON expected');
+          }
           that.json = json;
           that.step = json.step_name;
           that.stepData = json.step_data;
@@ -212,6 +211,12 @@ Challenge.prototype.select = function(methodId) {
   //   return that; //response;
   // });
 };
+
+// Challenge.prototype.selectEmail = function() {
+//   //{"step_name": "verify_email", "step_data": {"security_code": "None", "resend_delay": 60, "contact_point": "l*******a@l***.ru", "form_type": "email"}, "user_id": 6647990140, "nonce_code": "sf56Hrtlz7", "status": "ok"}' } }
+
+// };
+
 
 Challenge.prototype.applyCode = function(code) {
   const that = this;
