@@ -171,7 +171,7 @@ Challenge.prototype.applyCode = function(code) {
         throw new TypeError('Invalid response. JSON expected');
       }
       if (
-        response.statusCode === 200 &&
+        response.statusCode === '200' &&
         json.status === 'ok' &&
         (json.action === 'close' ||
           json.location === 'instagram://checkpoint/dismiss')
