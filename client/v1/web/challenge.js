@@ -148,7 +148,7 @@ Challenge.prototype.select = function(methodId) {
   });
 };
 
-Challenge.setPhone = function(phone) {
+Challenge.prototype.setPhone = function(phone) {
   const that = this;
 
   //if (!_phone) return new Error('Invalid phone number');
