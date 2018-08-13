@@ -148,6 +148,39 @@ Challenge.prototype.select = function(methodId) {
   });
 };
 
+Challenge.setPhone = function(phone) {
+  const that = this;
+
+  //if (!_phone) return new Error('Invalid phone number');
+  const instaPhone = that.stepData.phone_number;
+  const _phone = phone || instaPhone;
+
+  return new WebRequest(that.session)
+    .setMethod('POST')
+    .setUrl(that.apiUrl)
+    .setHeaders({
+      'User-Agent': iPhoneUserAgent
+    })
+    .setBodyType('form')
+    .setData({
+      phone_number: _phone
+    })
+    .removeHeader('x-csrftoken')
+    .send({ followRedirect: false })
+    .then(webResponse => {
+      let json;
+      try {
+        json = JSON.parse(webResponse.body);
+      } catch (e) {
+        throw new TypeError('Invalid response. JSON expected');
+      }
+      that.json = json;
+      that.step = json.step_name;
+      that.stepData = json.step_data;
+      return that;
+    });
+};
+
 Challenge.prototype.applyCode = function(code) {
   const that = this;
   if (!code || code.length !== 6) throw new Error('Invalid code provided');
