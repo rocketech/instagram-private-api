@@ -1,17 +1,18 @@
 const _ = require('lodash');
 const Promise = require('bluebird');
 const request = require('request-promise');
-require('request-debug')(request, (type, data, r) => { // eslint-disable-line
+require('request-debug')(request, (type, data, r) => {
+  // eslint-disable-line
   // put your request or response handling logic here
   switch (type) {
   case 'request':
-    console.dir(`REQUEST REQUEST: ${data}`);
+    console.dir(data, { depth: null });
     break;
   case 'redirect':
-    console.dir(`REQUEST REDIRECT: ${data}`);
+    console.dir(data, { depth: null });
     break;
   case 'response':
-    console.dir(`REQUEST RESPONSE: ${data}`);
+    console.dir(data, { depth: null });
     break;
   }
 });
@@ -356,15 +357,18 @@ Request.prototype.errorMiddleware = function(response) {
 
 // If you need to perform loging or something like that!
 // will also accept promise
-Request.prototype.beforeParse = function(response, request, attempts) {// eslint-disable-line
+Request.prototype.beforeParse = function(response, request, attempts) {
+  // eslint-disable-line
   return response;
 };
 
-Request.prototype.beforeError = function(error, request, attempts) {// eslint-disable-line
+Request.prototype.beforeError = function(error, request, attempts) {
+  // eslint-disable-line
   throw error;
 };
 
-Request.prototype.afterError = function(error, request, attempts) { // eslint-disable-line
+Request.prototype.afterError = function(error, request, attempts) {
+  // eslint-disable-line
   throw error;
 };
 
