@@ -6,13 +6,13 @@ require('request-debug')(request, (type, data, r) => {
   // put your request or response handling logic here
   switch (type) {
   case 'request':
-    console.dir(data, { depth: null });
+    console.dir({ REQUEST: 'request', data }, { depth: null });
     break;
   case 'redirect':
-    console.dir(data, { depth: null });
+    console.dir({ REQUEST: 'redirect', data }, { depth: null });
     break;
   case 'response':
-    console.dir(data, { depth: null });
+    console.dir({ REQUEST: 'response', data }, { depth: null });
     break;
   }
 });
