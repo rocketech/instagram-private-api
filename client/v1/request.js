@@ -1,17 +1,17 @@
 const _ = require('lodash');
 const Promise = require('bluebird');
 const request = require('request-promise');
-require('request-debug')(request, (type, data, r) => {
+require('request-debug')(request, (type, data, r) => { // eslint-disable-line
   // put your request or response handling logic here
   switch (type) {
   case 'request':
-    console.dir(`REQUEST REQUEST: ${JSON.stringify(data)}`);
+    console.dir(`REQUEST REQUEST: ${data}`);
     break;
   case 'redirect':
-    console.dir(`REQUEST REDIRECT: ${JSON.stringify(data)}`);
+    console.dir(`REQUEST REDIRECT: ${data}`);
     break;
   case 'response':
-    console.dir(`REQUEST RESPONSE: ${JSON.stringify(data)}`);
+    console.dir(`REQUEST RESPONSE: ${data}`);
     break;
   }
 });
@@ -45,7 +45,7 @@ function Request(session, uuid) {
     });
   }
 
-  this._initialize.apply(this, arguments);
+  this._initialize.apply(this, arguments); // eslint-disable-line
   this._transform = function(t) {
     return t;
   };
@@ -272,7 +272,7 @@ Request.prototype.signData = function() {
 Request.prototype._prepareData = function() {
   const that = this;
   return new Promise((resolve, reject) => {
-    if (that._request.method == 'GET') return resolve({});
+    if (that._request.method === 'GET') return resolve({});
     if (that._signData) {
       that.signData().then(data => {
         const obj = {};
@@ -288,7 +288,7 @@ Request.prototype._prepareData = function() {
 };
 
 Request.prototype._mergeOptions = function(options) {
-  var options = _.defaults(
+  const _options = _.defaults(
     {
       method: this._request.method,
       url: this.url,
@@ -298,7 +298,7 @@ Request.prototype._mergeOptions = function(options) {
     options || {},
     this._request.options
   );
-  return Promise.resolve(options);
+  return Promise.resolve(_options);
 };
 
 Request.prototype.parseMiddleware = function(response) {
@@ -327,18 +327,18 @@ Request.prototype.errorMiddleware = function(response) {
   response = this.parseMiddleware(response);
   const json = response.body;
   if (json.spam) throw new Exceptions.ActionSpamError(json);
-  if (json.message == 'challenge_required') {
+  if (json.message === 'challenge_required') {
     const uuid = this._request.data._uuid;
     console.log(
       `throwing CheckpointError from request.errorMiddleware. uuid=${uuid}`
     );
     throw new Exceptions.CheckpointError(json, this.session, uuid);
   }
-  if (json.message == 'login_required')
+  if (json.message === 'login_required')
     throw new Exceptions.AuthenticationError(
       'Login required to process this request'
     );
-  if (json.error_type == 'sentry_block')
+  if (json.error_type === 'sentry_block')
     throw new Exceptions.SentryBlockError(json);
   if (
     response.statusCode === 429 ||
@@ -356,19 +356,19 @@ Request.prototype.errorMiddleware = function(response) {
 
 // If you need to perform loging or something like that!
 // will also accept promise
-Request.prototype.beforeParse = function(response, request, attemps) {
+Request.prototype.beforeParse = function(response, request, attempts) {// eslint-disable-line
   return response;
 };
 
-Request.prototype.beforeError = function(error, request, attemps) {
+Request.prototype.beforeError = function(error, request, attempts) {// eslint-disable-line
   throw error;
 };
 
-Request.prototype.afterError = function(error, request, attemps) {
+Request.prototype.afterError = function(error, request, attempts) { // eslint-disable-line
   throw error;
 };
 
-Request.prototype.send = function(options, attemps) {
+Request.prototype.send = function(options, attempts) {
   const that = this;
 
   // const _data = that._request.data;
@@ -383,7 +383,7 @@ Request.prototype.send = function(options, attemps) {
   //     console.log(cookie);
   // });
 
-  if (!attemps) attemps = 0;
+  if (!attempts) attempts = 0;
   return this._mergeOptions(options)
     .then(opts => {
       return [opts, that._prepareData()];
@@ -394,7 +394,7 @@ Request.prototype.send = function(options, attemps) {
     })
     .then(opts => {
       options = opts;
-      return [Request.requestClient(options), options, attemps];
+      return [Request.requestClient(options), options, attempts];
     })
     .spread(_.bind(this.beforeParse, this))
     .then(_.bind(this.parseMiddleware, this))
@@ -411,7 +411,7 @@ Request.prototype.send = function(options, attemps) {
       //   cookies.forEach(cookie => {
       //       console.log(cookie);
       //   });
-      if (_.isObject(json) && json.status == 'ok')
+      if (_.isObject(json) && json.status === 'ok')
         return _.omit(response.body, 'status');
       if (
         _.isString(json.message) &&
@@ -422,14 +422,14 @@ Request.prototype.send = function(options, attemps) {
       throw new Exceptions.RequestError(json);
     })
     .catch(error => {
-      return that.beforeError(error, options, attemps);
+      return that.beforeError(error, options, attempts);
     })
     .catch(err => {
       if (err instanceof Exceptions.APIError) throw err;
       if (!err || !err.response) throw err;
 
       const response = err.response;
-      if (response.statusCode == 400) {
+      if (response.statusCode === 400) {
         const json = JSON.parse(response.body);
         if (_.isObject(json) && json.two_factor_required === true) {
           console.log('Request: throwing 2f Error');
@@ -437,12 +437,12 @@ Request.prototype.send = function(options, attemps) {
         }
       }
 
-      if (response.statusCode == 404)
+      if (response.statusCode === 404)
         throw new Exceptions.NotFoundError(response);
       if (response.statusCode >= 500) {
-        if (attemps <= that.attemps) {
-          attemps += 1;
-          return that.send(options, attemps);
+        if (attempts <= that.attemps) {
+          attempts += 1;
+          return that.send(options, attempts);
         } else {
           throw new Exceptions.ParseError(response, that);
         }
@@ -456,6 +456,6 @@ Request.prototype.send = function(options, attemps) {
       throw new Exceptions.RequestError(error);
     })
     .catch(error => {
-      return that.afterError(error, options, attemps);
+      return that.afterError(error, options, attempts);
     });
 };
