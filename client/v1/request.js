@@ -1,7 +1,20 @@
 const _ = require('lodash');
 const Promise = require('bluebird');
 const request = require('request-promise');
-require('request-debug')(request);
+require('request-debug')(request, (type, data, r) => {
+  // put your request or response handling logic here
+  switch (type) {
+  case 'request':
+    console.dir(`REQUEST REQUEST: ${JSON.stringify(data)}`);
+    break;
+  case 'redirect':
+    console.dir(`REQUEST REDIRECT: ${JSON.stringify(data)}`);
+    break;
+  case 'response':
+    console.dir(`REQUEST RESPONSE: ${JSON.stringify(data)}`);
+    break;
+  }
+});
 const JSONbig = require('json-bigint');
 const Agent = require('socks5-https-client/lib/Agent');
 
@@ -245,7 +258,7 @@ Request.prototype.signData = function() {
   const that = this;
   if (!_.includes(['POST', 'PUT', 'PATCH', 'DELETE'], this._request.method))
     throw new Error('Wrong request method for signing data!');
-  return signatures.sign(this._request.data).then((data) => {
+  return signatures.sign(this._request.data).then(data => {
     that.setHeaders({
       'User-Agent': that.device.userAgent(data.appVersion)
     });
@@ -258,10 +271,10 @@ Request.prototype.signData = function() {
 
 Request.prototype._prepareData = function() {
   const that = this;
-  return new Promise(((resolve, reject) => {
+  return new Promise((resolve, reject) => {
     if (that._request.method == 'GET') return resolve({});
     if (that._signData) {
-      that.signData().then((data) => {
+      that.signData().then(data => {
         const obj = {};
         obj[that._request.bodyType] = data;
         resolve(obj);
@@ -271,7 +284,7 @@ Request.prototype._prepareData = function() {
       obj[that._request.bodyType] = that._request.data;
       resolve(obj);
     }
-  }));
+  });
 };
 
 Request.prototype._mergeOptions = function(options) {
@@ -316,7 +329,9 @@ Request.prototype.errorMiddleware = function(response) {
   if (json.spam) throw new Exceptions.ActionSpamError(json);
   if (json.message == 'challenge_required') {
     const uuid = this._request.data._uuid;
-    console.log(`throwing CheckpointError from request.errorMiddleware. uuid=${uuid}`);
+    console.log(
+      `throwing CheckpointError from request.errorMiddleware. uuid=${uuid}`
+    );
     throw new Exceptions.CheckpointError(json, this.session, uuid);
   }
   if (json.message == 'login_required')
@@ -370,14 +385,14 @@ Request.prototype.send = function(options, attemps) {
 
   if (!attemps) attemps = 0;
   return this._mergeOptions(options)
-    .then((opts) => {
+    .then(opts => {
       return [opts, that._prepareData()];
     })
     .spread((opts, data) => {
       opts = _.defaults(opts, data);
       return that._transform(opts);
     })
-    .then((opts) => {
+    .then(opts => {
       options = opts;
       return [Request.requestClient(options), options, attemps];
     })
@@ -409,7 +424,7 @@ Request.prototype.send = function(options, attemps) {
     .catch(error => {
       return that.beforeError(error, options, attemps);
     })
-    .catch((err) => {
+    .catch(err => {
       if (err instanceof Exceptions.APIError) throw err;
       if (!err || !err.response) throw err;
 
@@ -435,12 +450,12 @@ Request.prototype.send = function(options, attemps) {
         that.errorMiddleware(response);
       }
     })
-    .catch((error) => {
+    .catch(error => {
       if (error instanceof Exceptions.APIError) throw error;
       error = _.defaults(error, { message: 'Fatal internal error!' });
       throw new Exceptions.RequestError(error);
     })
-    .catch((error) => {
+    .catch(error => {
       return that.afterError(error, options, attemps);
     });
 };
