@@ -7,6 +7,8 @@ require('request-debug')(request, (type, data, r) => {
   switch (type) {
   case 'request':
     console.dir({ REQUEST: 'request', data }, { depth: null });
+    if (r.formData)
+      console.dir({ REQUEST: 'request.formData', formData: r.formData }, { depth: null });
     break;
   case 'redirect':
     console.dir({ REQUEST: 'redirect', data }, { depth: null });
