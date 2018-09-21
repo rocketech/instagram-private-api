@@ -1,23 +1,23 @@
 const _ = require('lodash');
 const Promise = require('bluebird');
 const request = require('request-promise');
-require('request-debug')(request, (type, data, r) => {
-  // eslint-disable-line
-  // put your request or response handling logic here
-  switch (type) {
-  case 'request':
-    console.dir({ REQUEST: 'request', data }, { depth: null });
-    if (r.formData)
-      console.dir({ REQUEST: 'request.formData', formData: r.formData }, { depth: null });
-    break;
-  case 'redirect':
-    console.dir({ REQUEST: 'redirect', data }, { depth: null });
-    break;
-  case 'response':
-    console.dir({ REQUEST: 'response', data }, { depth: null });
-    break;
-  }
-});
+// require('request-debug')(request, (type, data, r) => {
+//   // eslint-disable-line
+//   // put your request or response handling logic here
+//   switch (type) {
+//   case 'request':
+//     console.dir({ REQUEST: 'request', data }, { depth: null });
+//     if (r.formData)
+//       console.dir({ REQUEST: 'request.formData', formData: r.formData }, { depth: null });
+//     break;
+//   case 'redirect':
+//     console.dir({ REQUEST: 'redirect', data }, { depth: null });
+//     break;
+//   case 'response':
+//     console.dir({ REQUEST: 'response', data }, { depth: null });
+//     break;
+//   }
+// });
 const JSONbig = require('json-bigint');
 const Agent = require('socks5-https-client/lib/Agent');
 
