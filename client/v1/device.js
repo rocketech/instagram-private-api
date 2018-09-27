@@ -3,17 +3,17 @@ const _ = require('lodash');
 const md5 = require('js-md5');
 
 // Thanks to @mgp25 for such a list
-const devices = require('./devices.json');
-
+const devices = require('./devices.js');
 
 function Device(username) {
   if (!_.isString(username))
-    throw new Error('`Device` class needs username to be able generate correlated phone_id seed!');
+    throw new Error(
+      '`Device` class needs username to be able generate correlated phone_id seed!'
+    );
   this.username = username;
 }
 
 module.exports = Device;
-
 
 Object.defineProperty(Device.prototype, 'id', {
   get() {
@@ -21,28 +21,26 @@ Object.defineProperty(Device.prototype, 'id', {
   }
 });
 
-
 Object.defineProperty(Device.prototype, 'md5', {
   get() {
     return md5(this.username);
   }
 });
 
-
 // Useful for getting device from csv based on line number
 Object.defineProperty(Device.prototype, 'md5int', {
   get() {
-    if (!this._md5int)
-      this._md5int = parseInt(parseInt(this.md5, 32) / 10e32);
+    if (!this._md5int) this._md5int = parseInt(parseInt(this.md5, 32) / 10e32);
     return this._md5int;
   }
 });
 
-
 Object.defineProperty(Device.prototype, 'api', {
   get() {
-    if (!this._api)
-      this._api = 18 + (this.md5int % 5);
+    if (!this._api) {
+      const line = devices[this.md5int % devices.length];
+      this._api = line[0];
+    }
     return this._api;
   },
   set(api) {
@@ -50,11 +48,12 @@ Object.defineProperty(Device.prototype, 'api', {
   }
 });
 
-
 Object.defineProperty(Device.prototype, 'release', {
   get() {
-    if (!this._release)
-      this._release = ['4.0.4', '4.3.1', '4.4.4', '5.1.1', '6.0.1'][this.md5int % 5];
+    if (!this._release) {
+      const line = devices[this.md5int % devices.length];
+      this._release = line[1];
+    }
     return this._release;
   },
   set(release) {
@@ -62,24 +61,22 @@ Object.defineProperty(Device.prototype, 'release', {
   }
 });
 
-
 Object.defineProperty(Device.prototype, 'info', {
   get() {
-    if (this._info) return this._info;
-    const line = devices[this.md5int % devices.length];
-    const info = {
-      manufacturer: line[0],
-      device: line[1],
-      model: line[2]
-    };
-    this._info = info;
-    return info;
+    if (!this._info) {
+      const line = devices[this.md5int % devices.length];
+      this._info = {
+        manufacturer: line[4],
+        model: line[5],
+        device: line[6]
+      };
+    }
+    return this._info;
   },
   set(info) {
     this._info = info;
   }
 });
-
 
 Object.defineProperty(Device.prototype, 'payload', {
   get() {
@@ -92,50 +89,65 @@ Object.defineProperty(Device.prototype, 'payload', {
   }
 });
 
-
 Object.defineProperty(Device.prototype, 'dpi', {
   get() {
-    if (!this._dpi)
-      this._dpi = ['801', '577', '576', '538', '515', '424', '401', '373'][this.md5int % 8];
+    if (!this._dpi) {
+      const line = devices[this.md5int % devices.length];
+      this._dpi = line[2];
+    }
     return this._dpi;
   },
   set(set) {
-    return this._dpi = set;
+    return (this._dpi = set);
   }
 });
-
 
 Object.defineProperty(Device.prototype, 'resolution', {
   get() {
-    if (!this._resolution)
-      this._resolution = [
-        '3840x2160', '1440x2560', '2560x1440', '1440x2560',
-        '2560x1440', '1080x1920', '1080x1920', '1080x1920'
-      ][this.md5int % 8];
+    if (!this._resolution) {
+      const line = devices[this.md5int % devices.length];
+      this._resolution = line[3];
+    }
     return this._resolution;
   },
   set(resolution) {
-    return this._resolution = resolution;
+    return (this._resolution = resolution);
   }
 });
-
 
 Object.defineProperty(Device.prototype, 'language', {
   get() {
-    if (!this._language)
-      this._language = 'en_US';
+    if (!this._language) this._language = 'en_US';
     return this._language;
   },
   set(lang) {
-    return this._language = lang;
+    return (this._language = lang);
   }
 });
 
+Object.defineProperty(Device.prototype, 'chipMaker', {
+  get() {
+    if (!this._chipMaker) {
+      const line = devices[this.md5int % devices.length];
+      this._chipMaker = line[7];
+    }
+    return this._chipMaker;
+  },
+  set(chipMaker) {
+    return (this._chipMaker = chipMaker);
+  }
+});
 
 Device.prototype.userAgent = function(version) {
   const agent = [
-    this.api + '/' + this.release, this.dpi + 'dpi',
-    this.resolution, this.info.manufacturer, this.info.model, this.info.device, this.language
+    this.api + '/' + this.release,
+    this.dpi + 'dpi',
+    this.resolution,
+    this.info.manufacturer,
+    this.info.model,
+    this.info.device,
+    this.chipMaker,
+    this.language,
   ];
   return CONSTANTS.instagramAgentTemplate({
     agent: agent.join('; '),
