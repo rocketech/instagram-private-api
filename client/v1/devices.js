@@ -1,5 +1,10 @@
 module.exports = [
+  // based on mgp25 php repo
   //[api, android, dpi, resolution, manufacturer, model, device, cipMaker]
+  /*
+     * LAST-UPDATED: MARCH 2017.
+     */
+
   /* OnePlus 3T. Released: November 2016.
      * https://www.amazon.com/OnePlus-A3010-64GB-Gunmetal-International/dp/B01N4H00V8
      * https://www.handsetdetection.com/properties/devices/OnePlus/A3010
