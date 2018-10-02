@@ -107,7 +107,7 @@ Challenge.prototype.select = function(methodId) {
         .setData({
           choice: methodId
         })
-        .setCSRFToken()
+        .generateUUID()
         .setDevice(that.session.device)
         .signPayload()
         .send({ followRedirect: true })
@@ -197,7 +197,7 @@ Challenge.prototype.applyCode = function(code) {
     .setData({
       security_code: code
     })
-    .setCSRFToken()
+    .generateUUID()
     .setDevice(that.session.device)
     .signPayload()
     // .removeHeader('x-csrftoken')
