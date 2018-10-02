@@ -1,6 +1,7 @@
 const _ = require('lodash');
 const Promise = require('bluebird');
 const request = require('request-promise');
+const qs = require('querystring');
 // require('request-debug')(request, (type, data, r) => {
 //   // eslint-disable-line
 //   // put your request or response handling logic here
@@ -372,6 +373,15 @@ Request.prototype.beforeError = function(error, request, attempts) {
 Request.prototype.afterError = function(error, request, attempts) {
   // eslint-disable-line
   throw error;
+};
+
+Request.prototype.setQuery = function(queryParams) {
+  if (_.isObject(queryParams)) {
+    const queryString = qs.stringify(queryParams);
+    this.setUrl(this.url + '?' + queryString);
+    return this;
+  } else { throw new Error('Bad query params. object excepted'); }
+
 };
 
 Request.prototype.send = function(options, attempts) {
