@@ -39,6 +39,9 @@ WebRequest.prototype.setDevice = function(device) {
   this.setHeaders({
     'User-Agent': device.userAgent()
   });
+  this.setData({
+    device_id: device.id
+  });
   return this;
 };
 
@@ -53,6 +56,9 @@ WebRequest.prototype.setJSONEndpoint = function(json) {
 WebRequest.prototype.setCSRFToken = function(token) {
   this.setHeaders({
     'x-csrftoken': token
+  });
+  this.setData({
+    _csrftoken: token
   });
   return this;
 };
