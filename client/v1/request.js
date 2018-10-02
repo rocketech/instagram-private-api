@@ -226,9 +226,9 @@ Request.prototype.setLocalAddress = function(ipAddress) {
 };
 
 Request.prototype.setCSRFToken = function(token) {
-  this.setData({
-    _csrftoken: token
-  });
+  // this.setData({
+  //   _csrftoken: token
+  // });
   return this;
 };
 

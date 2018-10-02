@@ -57,9 +57,9 @@ WebRequest.prototype.setCSRFToken = function(token) {
   this.setHeaders({
     'x-csrftoken': token
   });
-  this.setData({
-    _csrftoken: token
-  });
+  // this.setData({
+  //   _csrftoken: token
+  // });
   return this;
 };
 
