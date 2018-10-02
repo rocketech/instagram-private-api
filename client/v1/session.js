@@ -132,7 +132,7 @@ Session.login = function(session, username, password, uuid) {
     .setData({
       username,
       password,
-      login_attempt_count: uuid ? 1 : 0
+      login_attempt_count: uuid ? '1' : '0'
     })
     .signPayload()
     .send()
