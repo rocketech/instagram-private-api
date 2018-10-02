@@ -255,6 +255,7 @@ Request.prototype.setDevice = function(device) {
   this.setData({
     device_id: device.id
   });
+  console.log(`settingDeviceId: ${device.id}`);
   return this;
 };
 
