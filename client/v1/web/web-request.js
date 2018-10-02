@@ -5,6 +5,7 @@ const Request = require('../request');
 const routes = require('../routes');
 const Helpers = require('../../../helpers');
 const CONSTANTS = require('../constants');
+const qs = require('querystring');
 
 function WebRequest() {
   Request.apply(this, arguments);
@@ -62,6 +63,13 @@ WebRequest.prototype.setHost = function(host) {
     Host: host
   });
   return this;
+};
+
+WebRequest.prototype.setQuery = function(queryParams) {
+  if (_.isObject(queryParams)) {
+    const queryString = qs.stringify(queryParams);
+    this.setUrl(this.url + '?' + queryString);
+  } else { throw new Error('Bad query params. object excepted'); }
 };
 
 WebRequest.prototype.send = function(options) {
