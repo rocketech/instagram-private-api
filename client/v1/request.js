@@ -45,7 +45,7 @@ function Request(session, uuid) {
 
   if (uuid) {
     this.setData({
-      _uuid: uuid
+      guid: uuid
     });
   }
 
