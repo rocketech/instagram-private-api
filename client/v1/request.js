@@ -189,9 +189,9 @@ Request.prototype.transform = function(callback) {
 };
 
 Request.prototype.generateUUID = function() {
-  if (!this._request.data._uuid) {
+  if (!this._request.data.uuid) {
     this.setData({
-      _uuid: Helpers.generateUUID()
+      guid: Helpers.generateUUID()
     });
   }
   return this;
@@ -332,7 +332,7 @@ Request.prototype.errorMiddleware = function(response) {
   const json = response.body;
   if (json.spam) throw new Exceptions.ActionSpamError(json);
   if (json.message === 'challenge_required') {
-    const uuid = this._request.data._uuid;
+    const uuid = this._request.data.guid;
     console.log(
       `throwing CheckpointError from request.errorMiddleware. uuid=${uuid}`
     );
