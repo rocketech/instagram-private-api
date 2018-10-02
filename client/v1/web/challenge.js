@@ -108,7 +108,7 @@ Challenge.prototype.select = function(methodId) {
           choice: methodId
         })
         .setCSRFToken()
-        .setDevice()
+        .setDevice(that.session.device)
         .signPayload()
         .send({ followRedirect: true })
         //we need catch 400 status to extract response.body.json
@@ -198,7 +198,7 @@ Challenge.prototype.applyCode = function(code) {
       security_code: code
     })
     .setCSRFToken()
-    .setDevice()
+    .setDevice(that.session.device)
     .signPayload()
     // .removeHeader('x-csrftoken')
     .send({ followRedirect: false })
