@@ -107,6 +107,9 @@ Challenge.prototype.select = function(methodId) {
         .setData({
           choice: methodId
         })
+        .setCSRFToken()
+        .setDevice()
+        .signPayload()
         .send({ followRedirect: true })
         //we need catch 400 status to extract response.body.json
         .catch(errors.StatusCodeError, error => {
@@ -194,7 +197,10 @@ Challenge.prototype.applyCode = function(code) {
     .setData({
       security_code: code
     })
-    .removeHeader('x-csrftoken')
+    .setCSRFToken()
+    .setDevice()
+    .signPayload()
+    // .removeHeader('x-csrftoken')
     .send({ followRedirect: false })
     .then(response => {
       let json;
