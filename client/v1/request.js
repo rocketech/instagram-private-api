@@ -189,7 +189,7 @@ Request.prototype.transform = function(callback) {
 };
 
 Request.prototype.generateUUID = function() {
-  if (!this._request.data.uuid) {
+  if (!this._request.data.guid) {
     this.setData({
       guid: Helpers.generateUUID()
     });
