@@ -68,8 +68,7 @@ Challenge.prototype.reset = function() {
   const that = this;
   //"query": "guid=3e01032b-9663-4dcd-b929-a67f6634930b&device_id=android-5fdb585ce63ed5ce"
   return new Request(that.session)
-    .setMethod('POST')
-    .setBodyType('form')
+    .setMethod('GET')
     .setUrl(that.apiUrl)
     .setQuery({ guid: that.uuid, device_id: that.session.device.id })
     .setHeaders({
