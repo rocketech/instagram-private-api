@@ -44,9 +44,7 @@ function Request(session, uuid) {
   }
 
   if (uuid) {
-    this.setData({
-      guid: uuid
-    });
+    this._uuud = uuid
   }
 
   this._initialize.apply(this, arguments); // eslint-disable-line
@@ -190,6 +188,15 @@ Request.prototype.transform = function(callback) {
 
 Request.prototype.generateUUID = function() {
   if (!this._request.data.guid) {
+    this.setData({
+      guid: Helpers.generateUUID()
+    });
+  }
+  return this;
+};
+
+Request.prototype.setUUID = function(uuid) {
+  if (uuid) {
     this.setData({
       guid: Helpers.generateUUID()
     });
