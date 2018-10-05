@@ -90,7 +90,7 @@ Challenge.prototype.select = function(methodId) {
 
   return Promise.resolve(this).then(() => {
     return (
-      new Request(that.session)
+      new WebRequest(that.session)
         .setMethod('POST')
         .setUrl(that.apiUrl)
         .setHeaders({
@@ -150,7 +150,7 @@ Challenge.prototype.setPhone = function(phone) {
   const instaPhone = that.stepData.phone_number;
   const _phone = phone || instaPhone;
 
-  return new Request(that.session)
+  return new WebRequest(that.session)
     .setMethod('POST')
     .setUrl(that.apiUrl)
     .setHeaders({
