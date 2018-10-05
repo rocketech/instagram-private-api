@@ -128,7 +128,8 @@ Session.login = function(session, username, password, uuid) {
   return new Request(session, uuid)
     .setResource('login')
     .setMethod('POST')
-    .generateUUID()
+    .setUUID(uuid)
+    .generateUUID() //if not set
     .setData({
       username,
       password,
