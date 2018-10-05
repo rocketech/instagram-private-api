@@ -198,7 +198,7 @@ Request.prototype.generateUUID = function() {
 Request.prototype.setUUID = function(uuid) {
   if (uuid) {
     this.setData({
-      guid: Helpers.generateUUID()
+      guid: uuid
     });
   }
   return this;

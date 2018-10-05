@@ -35,14 +35,6 @@ const Challenge = function(challengeError) {
   this.step_data = '';
 };
 
-// we need change json over steps...
-// Object.defineProperty(Challenge.prototype, 'json', {
-//   get() {
-//     return this._json;
-//   },
-//   set() {}
-// });
-
 Object.defineProperty(Challenge.prototype, 'session', {
   get() {
     return this._session;
@@ -98,7 +90,7 @@ Challenge.prototype.select = function(methodId) {
 
   return Promise.resolve(this).then(() => {
     return (
-      new WebRequest(that.session)
+      new Request(that.session)
         .setMethod('POST')
         .setUrl(that.apiUrl)
         .setHeaders({
@@ -107,7 +99,7 @@ Challenge.prototype.select = function(methodId) {
         .setData({
           choice: methodId
         })
-        .setUUID(that._uuid)
+        .setUUID(that.uuid)
         .setDevice(that.session.device)
         .signPayload()
         .send({ followRedirect: true })
@@ -158,7 +150,7 @@ Challenge.prototype.setPhone = function(phone) {
   const instaPhone = that.stepData.phone_number;
   const _phone = phone || instaPhone;
 
-  return new WebRequest(that.session)
+  return new Request(that.session)
     .setMethod('POST')
     .setUrl(that.apiUrl)
     .setHeaders({
@@ -197,7 +189,7 @@ Challenge.prototype.applyCode = function(code) {
     .setData({
       security_code: code
     })
-    .setUUID(that._uuid)
+    .setUUID(that.uuid)
     .setDevice(that.session.device)
     .signPayload()
     // .removeHeader('x-csrftoken')
