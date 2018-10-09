@@ -200,6 +200,10 @@ Request.prototype.setUUID = function(uuid) {
     this.setData({
       guid: uuid
     });
+  } else {
+    this.setData({
+      guid: Helpers.generateUUID()
+    });
   }
   return this;
 };
