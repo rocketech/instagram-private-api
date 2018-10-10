@@ -63,9 +63,9 @@ Challenge.prototype.reset = function() {
     .setMethod('GET')
     .setUrl(that.apiUrl)
     .setQuery({ guid: that.uuid, device_id: that.session.device.id })
-    .setHeaders({
-      'User-Agent': iPhoneUserAgent
-    })
+    // .setHeaders({
+    //   'User-Agent': iPhoneUserAgent
+    // })
     .setBodyType('form')
     .signPayload()
     .send({ followRedirect: true })
@@ -202,7 +202,6 @@ Challenge.prototype.applyCode = function(code) {
       // .removeHeader('x-csrftoken')
       .send({ followRedirect: false })
       .then(json => {
-        console.log('--answer is---', JSON.stringify(json));
         // let json;
         // try {
         //   json = JSON.parse(response.body);
