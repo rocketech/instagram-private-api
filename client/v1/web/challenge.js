@@ -90,12 +90,12 @@ Challenge.prototype.select = function(methodId) {
 
   return Promise.resolve(this).then(() => {
     return (
-      new WebRequest(that.session)
+      new Request(that.session)
         .setMethod('POST')
         .setUrl(that.apiUrl)
-        .setHeaders({
-          'User-Agent': iPhoneUserAgent
-        })
+        // .setHeaders({
+        //   'User-Agent': iPhoneUserAgent
+        // })
         .setData({
           choice: methodId
         })
@@ -127,10 +127,10 @@ Challenge.prototype.select = function(methodId) {
           if (json.status === 'ok' && json.action === 'close')
             throw new Exceptions.NoChallengeRequired(that.session, 'statusOk'); //TODO: fix it!
         })
-        .then(webResponse => {
+        .then(response => {
           let json = null;
           try {
-            json = JSON.parse(webResponse.body);
+            json = JSON.parse(response.body);
           } catch (error) {
             throw new TypeError('Invalid response. JSON expected');
           }
@@ -143,6 +143,7 @@ Challenge.prototype.select = function(methodId) {
   });
 };
 
+//not checked!
 Challenge.prototype.setPhone = function(phone) {
   const that = this;
 
@@ -150,17 +151,17 @@ Challenge.prototype.setPhone = function(phone) {
   const instaPhone = that.stepData.phone_number;
   const _phone = phone || instaPhone;
 
-  return new WebRequest(that.session)
+  return new Request(that.session)
     .setMethod('POST')
     .setUrl(that.apiUrl)
-    .setHeaders({
-      'User-Agent': iPhoneUserAgent
-    })
+    // .setHeaders({
+    //   'User-Agent': iPhoneUserAgent
+    // })
     .setBodyType('form')
     .setData({
       phone_number: _phone
     })
-    .removeHeader('x-csrftoken')
+    // .removeHeader('x-csrftoken')
     .send({ followRedirect: false })
     .then(webResponse => {
       let json;
@@ -179,12 +180,12 @@ Challenge.prototype.setPhone = function(phone) {
 Challenge.prototype.applyCode = function(code) {
   const that = this;
   if (!code || code.length !== 6) throw new Error('Invalid code provided');
-  return new WebRequest(that.session)
+  return new Request(that.session)
     .setMethod('POST')
     .setUrl(that.apiUrl)
-    .setHeaders({
-      'User-Agent': iPhoneUserAgent
-    })
+    // .setHeaders({
+    //   'User-Agent': iPhoneUserAgent
+    // })
     .setBodyType('form')
     .setData({
       security_code: code

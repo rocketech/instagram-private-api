@@ -129,7 +129,7 @@ Session.login = function(session, username, password, uuid) {
     .setResource('login')
     .setMethod('POST')
     .setUUID(uuid)
-    .generateUUID() //if not set
+    // .generateUUID() //if not set
     .setData({
       username,
       password,
@@ -181,7 +181,7 @@ Session.login = function(session, username, password, uuid) {
           // We got sessionId and accountId, we are good to go
           return session;
         })
-        .catch(Exceptions.CookieNotValidError, (e) => {
+        .catch(Exceptions.CookieNotValidError, () => {
           throw error;
         });
     });
