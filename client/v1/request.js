@@ -44,7 +44,7 @@ function Request(session, uuid) {
   }
 
   if (uuid) {
-    this._uuud = uuid
+    this._uuud = uuid;
   }
 
   this._initialize.apply(this, arguments); // eslint-disable-line
@@ -237,9 +237,11 @@ Request.prototype.setLocalAddress = function(ipAddress) {
 };
 
 Request.prototype.setCSRFToken = function(token) {
-  // this.setData({
-  //   _csrftoken: token
-  // });
+  if (token) {
+    this.setData({
+      _csrftoken: token
+    });
+  }
   return this;
 };
 
@@ -391,8 +393,9 @@ Request.prototype.setQuery = function(queryParams) {
     const queryString = qs.stringify(queryParams);
     this.setUrl(this.url + '?' + queryString);
     return this;
-  } else { throw new Error('Bad query params. object excepted'); }
-
+  } else {
+    throw new Error('Bad query params. object excepted');
+  }
 };
 
 Request.prototype.send = function(options, attempts) {

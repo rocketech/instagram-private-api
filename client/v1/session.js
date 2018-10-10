@@ -129,7 +129,7 @@ Session.login = function(session, username, password, uuid) {
     .setResource('login')
     .setMethod('POST')
     .setUUID(uuid)
-    // .generateUUID() //if not set
+    .setCSRFToken(session.CSRFToken)
     .setData({
       username,
       password,
