@@ -153,82 +153,88 @@ Challenge.prototype.setPhone = function(phone) {
   const instaPhone = that.stepData.phone_number;
   const _phone = phone || instaPhone;
 
-  return new Request(that.session)
-    .setMethod('POST')
-    .setUrl(that.apiUrl)
-    // .setHeaders({
-    //   'User-Agent': iPhoneUserAgent
-    // })
-    .setBodyType('form')
-    .setData({
-      phone_number: _phone
-    })
-    // .removeHeader('x-csrftoken')
-    .send({ followRedirect: false })
-    .then(webResponse => {
-      let json;
-      try {
-        json = JSON.parse(webResponse.body);
-      } catch (e) {
-        throw new TypeError('Invalid response. JSON expected');
-      }
-      that.json = json;
-      that.step = json.step_name;
-      that.stepData = json.step_data;
-      return that;
-    });
+  return (
+    new Request(that.session)
+      .setMethod('POST')
+      .setUrl(that.apiUrl)
+      // .setHeaders({
+      //   'User-Agent': iPhoneUserAgent
+      // })
+      .setBodyType('form')
+      .setData({
+        phone_number: _phone
+      })
+      // .removeHeader('x-csrftoken')
+      .send({ followRedirect: false })
+      .then(webResponse => {
+        let json;
+        try {
+          json = JSON.parse(webResponse.body);
+        } catch (e) {
+          throw new TypeError('Invalid response. JSON expected');
+        }
+        that.json = json;
+        that.step = json.step_name;
+        that.stepData = json.step_data;
+        return that;
+      })
+  );
 };
 
 Challenge.prototype.applyCode = function(code) {
   const that = this;
   if (!code || code.length !== 6) throw new Error('Invalid code provided');
-  return new Request(that.session)
-    .setMethod('POST')
-    .setUrl(that.apiUrl)
-    // .setHeaders({
-    //   'User-Agent': iPhoneUserAgent
-    // })
-    .setBodyType('form')
-    .setData({
-      security_code: code
-    })
-    .setUUID(that.uuid)
-    .setDevice(that.session.device)
-    .setBodyType('form')
-    .signPayload()
-    // .removeHeader('x-csrftoken')
-    .send({ followRedirect: false })
-    .then(json => {
-      // let json;
-      // try {
-      //   json = JSON.parse(response.body);
-      // } catch (e) {
-      //   throw new TypeError('Invalid response. JSON expected');
-      // }
-      if (
-        // response.statusCode === 200 &&
-        json.status === 'ok' &&
-        (json.action === 'close' ||
-          json.location === 'instagram://checkpoint/dismiss')
-      ) {
-        that.json = json;
-        that.step = 'success';
-        that.stepData = '';
-        return that;
-      }
-      throw new Exceptions.NotPossibleToResolveChallenge(
-        'Unknown error',
-        Exceptions.NotPossibleToResolveChallenge.CODE.UNKNOWN
-      );
-    })
-    .catch(errors.StatusCodeError, error => {
-      if (error.statusCode === 400)
-        throw new Exceptions.NotPossibleToResolveChallenge(
-          'Verification has not been accepted',
-          Exceptions.NotPossibleToResolveChallenge.CODE.NOT_ACCEPTED
-        );
-      throw error;
-    });
+  return (
+    new Request(that.session)
+      .setMethod('POST')
+      .setUrl(that.apiUrl)
+      // .setHeaders({
+      //   'User-Agent': iPhoneUserAgent
+      // })
+      .setBodyType('form')
+      .setData({
+        security_code: code
+      })
+      .setUUID(that.uuid)
+      .setDevice(that.session.device)
+      .setBodyType('form')
+      .signPayload()
+      // .removeHeader('x-csrftoken')
+      .send({ followRedirect: false })
+      .then(json => {
+        console.log('--answer is---', JSON.stringify(json));
+        // let json;
+        // try {
+        //   json = JSON.parse(response.body);
+        // } catch (e) {
+        //   throw new TypeError('Invalid response. JSON expected');
+        // }
+        if (
+          // response.statusCode === 200 &&
+          json.status === 'ok' &&
+          (json.action === 'close' ||
+            json.location === 'instagram://checkpoint/dismiss')
+        ) {
+          that.json = json;
+          that.step = 'success';
+          that.stepData = '';
+          return that;
+        } else {
+          throw new Exceptions.NotPossibleToResolveChallenge(
+            'Unknown error',
+            Exceptions.NotPossibleToResolveChallenge.CODE.UNKNOWN
+          );
+        }
+      })
+      .catch(errors.StatusCodeError, error => {
+        if (error.statusCode === 400)
+          throw new Exceptions.NotPossibleToResolveChallenge(
+            'Verification has not been accepted',
+            Exceptions.NotPossibleToResolveChallenge.CODE.NOT_ACCEPTED
+          );
+        throw error;
+      })
+  );
 };
 
 exports.Challenge = Challenge;
