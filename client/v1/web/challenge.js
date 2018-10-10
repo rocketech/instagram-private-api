@@ -198,15 +198,15 @@ Challenge.prototype.applyCode = function(code) {
     .signPayload()
     // .removeHeader('x-csrftoken')
     .send({ followRedirect: false })
-    .then(response => {
-      let json;
-      try {
-        json = JSON.parse(response.body);
-      } catch (e) {
-        throw new TypeError('Invalid response. JSON expected');
-      }
+    .then(json => {
+      // let json;
+      // try {
+      //   json = JSON.parse(response.body);
+      // } catch (e) {
+      //   throw new TypeError('Invalid response. JSON expected');
+      // }
       if (
-        response.statusCode === 200 &&
+        // response.statusCode === 200 &&
         json.status === 'ok' &&
         (json.action === 'close' ||
           json.location === 'instagram://checkpoint/dismiss')
