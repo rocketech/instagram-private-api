@@ -135,6 +135,7 @@ Session.login = function(session, username, password, uuid) {
       password,
       login_attempt_count: uuid ? '1' : '0'
     })
+    .setBodyType('form')
     .signPayload()
     .send()
     .catch((error) => {

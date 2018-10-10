@@ -66,6 +66,7 @@ Challenge.prototype.reset = function() {
     .setHeaders({
       'User-Agent': iPhoneUserAgent
     })
+    .setBodyType('form')
     .signPayload()
     .send({ followRedirect: true })
     .catch(error => {
@@ -101,6 +102,7 @@ Challenge.prototype.select = function(methodId) {
         })
         .setUUID(that.uuid)
         .setDevice(that.session.device)
+        .setBodyType('form')
         .signPayload()
         .send({ followRedirect: true })
         //we need catch 400 status to extract response.body.json
@@ -192,6 +194,7 @@ Challenge.prototype.applyCode = function(code) {
     })
     .setUUID(that.uuid)
     .setDevice(that.session.device)
+    .setBodyType('form')
     .signPayload()
     // .removeHeader('x-csrftoken')
     .send({ followRedirect: false })
