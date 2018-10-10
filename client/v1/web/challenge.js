@@ -211,7 +211,7 @@ Challenge.prototype.applyCode = function(code) {
         // }
         if (
           // response.statusCode === 200 &&
-          json.status === 'ok' &&
+          // json.status === 'ok' &&
           (json.action === 'close' ||
             json.location === 'instagram://checkpoint/dismiss')
         ) {
