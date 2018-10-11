@@ -64,9 +64,14 @@ const CONSTANTS = require('./constants');
 const Session = require('./session');
 
 Request.defaultHeaders = {
-  'X-IG-Connection-Type': 'WIFI',
+  'X-IG-Connection-Speed': '-1kbps',
+  'X-IG-Bandwidth-Speed-KBPS': '-1.000',
+  'X-IG-Bandwidth-TotalBytes-B': '0',
+  'X-IG-Bandwidth-TotalTime-MS': '0',
+  'X-IG-Connection-Type': 'MOBILE(LTE)',
   'X-IG-Capabilities': '3brTvw==', //'3QI=',
   'Accept-Language': 'en-US',
+  'X-IG-App-ID': '567067343352427',
   Host: CONSTANTS.HOSTNAME,
   Accept: '*/*',
   'Accept-Encoding': 'gzip, deflate, sdch',
