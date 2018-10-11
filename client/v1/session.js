@@ -129,6 +129,7 @@ Session.login = function(session, username, password, uuid) {
     .setResource('login')
     .setMethod('POST')
     .setUUID(uuid)
+    .setData({ phone_id: uuid })
     .setCSRFToken(session.CSRFToken)
     .setData({
       username,
